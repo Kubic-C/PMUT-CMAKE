@@ -6,8 +6,7 @@ If you have any questions or anything of that sort, please email: sawyerp06@gmai
 Warning for any one compiling this project: this project uses libraries that are not inside
 of pmut, for information on how to install these libraries. please scroll down.
 
-Warning for non-linux users: this uses the the X Window System, you may have to switch out some of the CMAKE_CXX_FLAGS(the linker options to be specific)
-for something that can compile on your system. 
+Warning for non-linux users: this uses the the X Window System linker flags, you may have to switch out some of the CMAKE_CXX_FLAGS(the linker options to be specific) for something that can compile on your system. 
 
 What PMUT(Porter Multi Use Terminal) is or will be.
 PMUT as the acronym infers is meant to have multiple uses,
