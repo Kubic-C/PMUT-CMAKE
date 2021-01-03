@@ -1,7 +1,7 @@
 #ifndef CONSOLE_BASE_H
 #define CONSOLE_BASE_H
 
-#include "abstract/headers/vertex_objects.h"
+#include "abstract/headers/shaders.h"
 
 namespace console
 {   

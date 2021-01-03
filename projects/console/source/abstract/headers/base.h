@@ -12,8 +12,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 // usual includes
+#include <string>
+#include <vector>
+#include <fstream>
 
 #define DEFAULT_BUFFER_TARGET GL_ARRAY_BUFFER
+#define DEFAULT_VBUFFER_SPACE 1024
 
 //namespace abstract for all abstract opengl objects
 namespace abstract

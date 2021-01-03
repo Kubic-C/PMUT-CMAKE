@@ -22,12 +22,14 @@ set(abstract_dir "source/abstract")
 set(absract_headers 
 "${abstract_dir}/headers/base.h"
 "${abstract_dir}/headers/vertex_objects.h"
+"${abstract_dir}/headers/shaders.h"
 )
 
 #all source(.cpp) in the abstract dir
 set(absract_sources
 "${abstract_dir}/base.cpp"
 "${abstract_dir}/vertex_objects.cpp"
+"${abstract_dir}/shaders.cpp"
 )
 
 
