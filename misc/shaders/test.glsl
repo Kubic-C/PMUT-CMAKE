@@ -1,4 +1,24 @@
-this is a test for pmut glsl
+/*
+    PMUT (Porter Multi Use Terminal) is a multi use command line,
+    that can in the future do networking, file manipulation, and
+    live app manipulation.
+    
+    PMUT  Copyright (C) 2021 Sawyer Porter
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
 @vertex
 #version 330 core
 layout (location = 0) in vec3 aPos; // the position variable has attribute position 0
