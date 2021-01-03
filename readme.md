@@ -10,7 +10,7 @@ Warning for non-linux users: this uses the the X Window System linker flags, you
 
 What PMUT(Porter Multi Use Terminal) is or will be.
 PMUT as the acronym infers is meant to have multiple uses,
-the folling are set in stone goals:
+the following are set in stone goals:
 
 - PMUT Networking: simple(basic chatboxes) and advance(fullblown multiplier) networking. when I say fullblown multiplayer I mean
 letting apps interact with PMUT, to avoid doing networking at all. There are of course security problems with that but I have a few("stolen")
