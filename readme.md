@@ -3,6 +3,8 @@ This is a super ambitious project. This project exists purely so I have somethin
 
 If you have any questions or anything of that sort, please email: sawyerp06@gmail.com
 
+HOW TO COMPILE: Scroll down to see how compile and run PMUT
+
 Warning for any one compiling this project: this project uses libraries that are not inside
 of pmut, for information on how to install these libraries. please scroll down.
 
@@ -21,6 +23,9 @@ ideas that can improve security.
 - PMUT Live app manipulation: think of this like cheat engine but you can also export an instance of an app from RAM into a file.
 
 - PMUT's Custom console: this console will be using opengl(glfw and glew) to render it with batch rendering :).
+
+-- how to compile PMUT --
+run ./gen_build_run.sh
 
 -- the ubuntu or debian way ---
 How to install GLFW:
