@@ -1,4 +1,7 @@
 #include "headers/base.h"
+#include <unistd.h>
+#include <limits.h>
+#include <experimental/filesystem>
 #include <iostream>
 
 namespace console
@@ -30,8 +33,26 @@ namespace console
     if(glewInit() != GLEW_OK)
         return -2;
 
+    abstract::program program;
+    abstract::shader vertex_shader(GL_VERTEX_SHADER);
+    if(!vertex_shader.set_shader_src_from_file("./release/misc/shaders/test.glsl", "vertex"))
+    {
+        std::cout << "failed to open file\n";
+    }
+    std::cout << vertex_shader.compile() << '\n';
 
+    abstract::shader fragment_shader(GL_FRAGMENT_SHADER);
+    if(!fragment_shader.set_shader_src_from_file("./release/misc/shaders/test.glsl", "fragment"))
+    {
+        std::cout << "failed to open file\n";
+    }
+    std::cout << fragment_shader.compile() << '\n';
 
+    program.attach(vertex_shader);
+    program.attach(fragment_shader);
+    std::cout << program.link() << '\n';
+    program.use();
+    
     float pos[] =
     {
         -0.5f, -0.5f,

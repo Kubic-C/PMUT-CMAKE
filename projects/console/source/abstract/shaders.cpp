@@ -96,7 +96,7 @@ namespace abstract
 		glGetProgramiv(id, GL_LINK_STATUS, &success);
 		if (!success)
 		{
-			glGetProgramInfoLog(success, DEFAULT_VBUFFER_SPACE, NULL, info_log.begin().base()); // is info_log.begin()._Ptr(); for windows?
+			glGetProgramInfoLog(id, DEFAULT_VBUFFER_SPACE, NULL, info_log.begin().base()); // is info_log.begin()._Ptr(); for windows?
 			return "--- compilation of program(id: " + std::to_string(id) + ") failed ---\n"
                                          + std::string(info_log.begin(), info_log.end());
 		}
