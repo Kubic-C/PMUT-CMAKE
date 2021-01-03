@@ -1,0 +1,85 @@
+/*
+    abstraction for vertex buffer objects and vertex array objects
+*/
+#ifndef ABSTRACT_VERTEX_OBJECTS_H
+#define ABSTRACT_VERTEX_OBJECTS_H
+
+#include "base.h"
+
+namespace abstract
+{
+    /*
+        vertex buffer(vertex buffer object(s) - vbo) are buffers
+        that are stored on the gpu usually in an vertex array 
+        object
+    */
+    class vertex_buffer
+    {
+    public: 
+        // pass a already existing vbo
+        vertex_buffer(unsigned int id, unsigned int type); 
+
+        // make a new vbo
+        vertex_buffer(unsigned int type);
+        
+    public: // methods ---
+        // tell opengl to put data inside of the buffer
+        void buffer_data(
+            long size,          // size of the data to be put in the vbo
+            const void* data,   // a pointer to the data to be put in the vbo
+            unsigned int usage  // see https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+        ); 
+ 
+        // binds the buffer
+        void bind();
+
+        // unbinds the buffer
+        // note: the code 'glBindBuffer(GL_ARRAY_BUFFER, 0)' 
+        // can be called anywhere and will unbind whatever
+        // vbo is bound wehther or not you call this method
+        void unbind();
+
+    private:
+        unsigned int id; // the vbo's id given by opengl
+        unsigned int type; // the type of data stored in the buffer
+    };
+
+    /*
+        vertex array(vertex array object(s) - vao) store vbos in 
+        an array, the vbos can then be access by GLSL shaders
+    */
+   class vertex_array
+   {
+   public:
+        // pass an already existing vao
+        vertex_array(unsigned int id); 
+
+        // generate a new vao
+        vertex_array();
+   public: // methods ---
+        // tell opengl how the data shall be read inside of the 
+        // currently bound vbo, also adding the vbo to the vao
+        void vertex_attrib_pointer(
+            unsigned int index, // where in the array
+            unsigned int size,  // 1 for 1D, 2 for 2D, etc.
+            unsigned int type,  // GL_FLOAT, etc.
+            unsigned char norm, // is normalized(already a float)
+            int stride,         // how many bytes to get to the vertex
+            const void* offset  // where should it start
+        );
+
+        // binds the vao
+        void bind();
+
+        // unbinds the vao
+        // note: the code 'glBindVertexArray(0)' 
+        // can be called anywhere and will unbind whatever
+        // vao is bound wehther or not you call this method
+        void unbind();
+
+   private:
+        unsigned int id; // the vao's id given by opengl
+   };
+} 
+
+#endif // ABSTRACT_VERTEX_OBJECTS_H

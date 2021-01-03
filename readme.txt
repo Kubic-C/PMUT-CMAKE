@@ -1,0 +1,1 @@
+create a folder named build before you use the bash script "gen_build_run.sh"

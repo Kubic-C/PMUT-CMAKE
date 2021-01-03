@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/sawyer/Development/PMUT CMAKE/PMUT/build",
+  "command": "/usr/bin/g++-7 -I../projects/console -g -o projects/console/CMakeFiles/libconsole.dir/source/console/base.cpp.o -c \"/home/sawyer/Development/PMUT CMAKE/PMUT/projects/console/source/console/base.cpp\"",
+  "file": "/home/sawyer/Development/PMUT CMAKE/PMUT/projects/console/source/console/base.cpp"
+},
+{
+  "directory": "/home/sawyer/Development/PMUT CMAKE/PMUT/build",
+  "command": "/usr/bin/g++-7 -I../projects/HLnetwork -g -o projects/HLnetwork/CMakeFiles/lib-hlnetwork.dir/source/base.cpp.o -c \"/home/sawyer/Development/PMUT CMAKE/PMUT/projects/HLnetwork/source/base.cpp\"",
+  "file": "/home/sawyer/Development/PMUT CMAKE/PMUT/projects/HLnetwork/source/base.cpp"
+}
+]
