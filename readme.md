@@ -25,6 +25,8 @@ ideas that can improve security.
 - PMUT's Custom console: this console will be using opengl(glfw and glew) to render it with batch rendering :).
 
 -- how to compile PMUT --
+please note that when building use ninja - https://ilyas-hamadouche.medium.com/build-your-c-projects-faster-using-ninja-3d7af9b418fc
+
 run ./gen_build_run.sh
 
 -- the ubuntu or debian way ---
