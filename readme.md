@@ -1,5 +1,5 @@
 This project is currently being remade from the ground up, becuase of that many features are missing.
-This is a super ambitious project. This project exists purely so I have something to do.
+This is a super ambitious project.
 
 If you have any questions or anything of that sort, please email: sawyerp06@gmail.com
 
