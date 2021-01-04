@@ -25,5 +25,7 @@
 
 int main(int argc, char *argv[])
 {
+    console::lib_test();
+    hlnet::lib_test();
     return 0;
 }

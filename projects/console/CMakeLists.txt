@@ -44,6 +44,8 @@ set(absract_headers
 "${abstract_dir}/headers/shaders.h"
 "${abstract_dir}/headers/textures.h"
 "${abstract_dir}/headers/startup.h"
+"${abstract_dir}/headers/math.h"
+"${abstract_dir}/headers/include.h"
 )
 
 #all source(.cpp) in the abstract dir
@@ -53,6 +55,7 @@ set(absract_sources
 "${abstract_dir}/shaders.cpp"
 "${abstract_dir}/textures.cpp"
 "${abstract_dir}/startup.cpp"
+"${abstract_dir}/math.cpp"
 )
 
 
