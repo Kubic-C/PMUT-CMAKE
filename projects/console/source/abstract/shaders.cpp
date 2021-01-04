@@ -69,6 +69,7 @@ namespace abstractgl
         }
 
         c_shader_source = (char*)shader_source.c_str();
+        shader_file.close();
         return true;
     }
 
