@@ -30,7 +30,8 @@ please note that when building use ninja - https://ilyas-hamadouche.medium.com/b
 run ./gen_build_run.sh
 
 -- the ubuntu or debian way ---
-How to install GLFW:
+
+How to install GLFW ====:
 
 make a folder which will hold
 a temporary build of GLFW.
@@ -47,7 +48,7 @@ $ sudo ninja install
 
 then your done!
 
-How to install GLEW:
+How to install GLEW ====:
 
 go http://glew.sourceforge.net/ click the link named TGZ then choose where to
 install the tarball, put it in a temporary build folder that will hold glew
@@ -62,3 +63,11 @@ $ make
 $ sudo make install
 
 then your done!
+
+How to install freetype ====:
+
+$ sudo apt-get install freetype*
+
+How to install glm ====:
+
+$ sudo apt-get install libglm-dev
