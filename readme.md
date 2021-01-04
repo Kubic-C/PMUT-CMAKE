@@ -22,7 +22,7 @@ ideas that can improve security.
 
 - PMUT Live app manipulation: think of this like cheat engine but you can also export an instance of an app from RAM into a file.
 
-- PMUT's Custom console: this console will be using opengl(glfw and glew) to render it with batch rendering :).
+- PMUT's Custom console: this console will be using opengl(glfw and glew) to render it
 
 -- how to compile PMUT --
 please note that when building use ninja - https://ilyas-hamadouche.medium.com/build-your-c-projects-faster-using-ninja-3d7af9b418fc
