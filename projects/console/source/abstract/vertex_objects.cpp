@@ -36,6 +36,15 @@ namespace abstractgl
         glGenBuffers(1, &id);
     }
 
+    vertex_buffer::vertex_buffer()
+    {
+    }
+    
+     void vertex_buffer::set_type(unsigned int type)
+     {
+        this->type = type;
+     }
+
     void vertex_buffer::buffer_data(
        long size,         
        const void* data,  
@@ -47,6 +56,12 @@ namespace abstractgl
         unbind();
     }
  
+    void vertex_buffer::update_buffer(unsigned int size, void* data)
+    {
+        bind();
+        glBufferSubData(type, 0, size, data);
+        unbind();
+    }
 
     void vertex_buffer::bind()
     {

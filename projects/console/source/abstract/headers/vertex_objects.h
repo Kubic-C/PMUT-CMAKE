@@ -43,8 +43,14 @@ namespace abstractgl
 
         // make a new vbo
         vertex_buffer(unsigned int type);
+
+        // give no type
+        vertex_buffer();
         
     public: // methods ---
+        // set the type of buffer i.e. GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY etc.
+        void set_type(unsigned int type);
+
         // tell opengl to put data inside of the buffer
         void buffer_data(
             long size,          // size of the data to be put in the vbo
@@ -52,6 +58,9 @@ namespace abstractgl
             unsigned int usage  // see https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
         ); 
  
+        // this update the data on the gpu(replacing whatever was there)
+        void update_buffer(unsigned int size, void* data);
+
         // binds the buffer
         void bind();
 

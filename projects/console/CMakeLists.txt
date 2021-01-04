@@ -23,49 +23,16 @@
 #dir to console ------
 set(console_dir "source/console")
 
-#all headers(.h) in the console dir
-set(console_headers 
-"${console_dir}/headers/base.h"
-"${console_dir}/headers/text.h"
+file(GLOB_RECURSE SOURCES
+    source/abstract/headers/*.h
+    source/abstract/*.cpp
+    source/console/headers/*.h
+    source/console/*.cpp
 )
-
-#all source(.cpp) files in the console dir
-set(console_sources 
-"${console_dir}/base.cpp"
-"${console_dir}/text.cpp"
-)
-
-#dir to abstract ------
-set(abstract_dir "source/abstract")
-
-#all headers(.h) in the abstract dir
-set(absract_headers 
-"${abstract_dir}/headers/base.h"
-"${abstract_dir}/headers/vertex_objects.h"
-"${abstract_dir}/headers/shaders.h"
-"${abstract_dir}/headers/textures.h"
-"${abstract_dir}/headers/startup.h"
-"${abstract_dir}/headers/external.h"
-"${abstract_dir}/headers/include.h"
-)
-
-#all source(.cpp) in the abstract dir
-set(absract_sources
-"${abstract_dir}/base.cpp"
-"${abstract_dir}/vertex_objects.cpp"
-"${abstract_dir}/shaders.cpp"
-"${abstract_dir}/textures.cpp"
-"${abstract_dir}/startup.cpp"
-"${abstract_dir}/external.cpp"
-)
-
 
 add_library(
     lib-console
-    ${console_headers}
-    ${console_sources}
-    ${absract_headers}
-    ${absract_sources}
+    ${SOURCES}
 )
 
 # EXTERNAL
@@ -87,7 +54,7 @@ target_link_libraries(lib-console PRIVATE lib-stbi_image)
 
 # FREETYPE
 find_package(Freetype REQUIRED)
-target_link_libraries(lib-console PRIVATE libfreetype.a)
+target_link_libraries(lib-console PRIVATE ${FREETYPE_LIBRARIES})
 target_include_directories(lib-console PUBLIC "freetype2")
 target_include_directories(lib-console PUBLIC ${FREETYPE_INCLUDE_DIRS})
 message(STATUS "${FREETYPE_LIBRARIES}\n-- ${FREETYPE_INCLUDE_DIRS}")

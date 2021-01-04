@@ -36,7 +36,6 @@ namespace abstractgl
         {
             if(FT_Init_FreeType(lib_ft))
             {
-                fprintf(stderr, "Could not init freetype library\n");
                 return false;
             }
 
@@ -47,13 +46,11 @@ namespace abstractgl
         {
             bool face_bad = FT_New_Face(lib_ft, dir.c_str(), 0, new_face);
             if(!face_bad)
-             return face_bad;
-
-            else
-            {
-                FT_Set_Pixel_Sizes(*new_face, dim.x, dim.y);
                 return face_bad;
-            }
+
+
+            FT_Set_Pixel_Sizes(*new_face, dim.x, dim.y);
+            return face_bad;
         }
 
         FT_GlyphSlot load_char(FT_Face face, char character)

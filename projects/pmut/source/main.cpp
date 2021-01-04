@@ -23,7 +23,52 @@
 #include "console/headers/text.h"
 #include "HLnetwork/headers/base.h"
 
-int main(int argc, char *argv[])
+int main()
 {
+    std::string gl_err;
+    GLFWwindow* window;
+    abstractgl::startup(window, abstractgl::window_data("render test",
+         1000, 1000), gl_err, 3, 3);
+    std::cout << gl_err << '\n';
+
+    if(!window)
+    {
+        return -2;
+    }
+
+    abstractgl::set_pixel_restriction(1);
+
+    FT_Library lib_ft;
+    if(!abstractgl::ft::startup(&lib_ft))
+    {
+        std::cout << "could not start freetype\n";
+        return -1;
+    }
+
+    std::string font_err;
+    console::lib_test_console();
+    
+    //std::cout << font_err << '\n';
+    //test_font.compute_characters(0, 128, font_err);
+    //std::cout << font_err << '\n';
+
+   // console::render::bind_font(&test_font);
+/*
+    console::render::startup(
+        "./release/misc/shaders/font.glsl", 1000, 1000);
+
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    while(!glfwWindowShouldClose(window))
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        console::render::render_text("this is a test", 
+            glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1000.f/2, 1000.f/2), 1);
+
+        glfwSwapBuffers(window);
+
+        glfwPollEvents();
+    }
+*/
     return 0;
 }
