@@ -20,10 +20,39 @@
 
 */
 
-#include "console/headers/text.h"
-#include "HLnetwork/headers/base.h"
+/*
+    math.h deals with vector math and other related
+    graphics math. I am not including GLM 
+    since the math that this projects requires is not
+    much
+*/
 
-int main(int argc, char *argv[])
+#ifndef ABSTRACT_MATH_H
+#define ABSTRACT_MATH_H
+
+#include "startup.h"
+
+namespace abstractgl
 {
-    return 0;
+    // glPixelStorei(GL_UNPACK_ALIGNMENT, size);
+    void set_pixel_restriction(int size);
+
+    // freetype
+    namespace ft 
+    {
+        /* FT How to
+            text rendering done - bad
+        */
+
+        // starts up the freetype library
+        bool startup(FT_Library* lib_ft);
+
+        // FT_New_Face
+        bool new_face(FT_Library lib_ft, std::string dir, glm::ivec2 dim, FT_Face* new_face);
+
+        // FT_Load_Char
+        FT_GlyphSlot load_char(FT_Face face, char character);
+    }
 }
+
+#endif // ABSTRACT_MATH_H

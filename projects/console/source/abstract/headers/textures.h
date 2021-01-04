@@ -56,6 +56,9 @@ namespace abstractgl
         // unbind the texture
         void unbind();
 
+        // this will make a sub texture
+        void load_sub_image(int width, int height, void* pixels);
+
         // load an image, returns false for bad file, and true for successful load
         // note: this does not set the glTex parameters, you will have to set those
         // your self, or call set_default_tex_args;

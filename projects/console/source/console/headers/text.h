@@ -28,10 +28,44 @@
 #define CONSOLE_BITMAP_H
 
 #include "base.h"
+#include <map>
+
+
+#define FAILED_TO_LOAD_FACE "failed to load face"
+#define FAILED_TO_LOAD_GLYPH "failed to load glyph: "
 
 namespace console
 {
-    int test_freetype();
+    struct character
+    {
+        char char_id; // character id ASCII
+        abstractgl::texture bitmap;
+        glm::ivec2 size;
+        glm::ivec2 bearing;
+        unsigned int advance;
+    };
+
+    /*
+        font will load a single texture
+    */
+    class font
+    {
+    public:
+        font(FT_Library& lib_ft);
+
+    public: // methods ---
+        // load a face/bitmap
+        void load_bitmap(std::string dir, std::string& err);
+
+        // parse data - will pre compute everything
+        void compute_characters(int min, int max, std::string& err);
+
+    protected:
+        std::map<char, character> char_set;
+        FT_Face face;
+        FT_Library& lib_ft;
+    };
+    
 }
  
 #endif // CONSOLE_BITMAP_H

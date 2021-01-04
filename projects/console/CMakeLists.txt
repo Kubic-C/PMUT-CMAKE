@@ -1,4 +1,3 @@
-
 #
 # PMUT (Porter Multi Use Terminal) is a multi use command line,
 # that can in the future do networking, file manipulation, and
@@ -46,7 +45,7 @@ set(absract_headers
 "${abstract_dir}/headers/shaders.h"
 "${abstract_dir}/headers/textures.h"
 "${abstract_dir}/headers/startup.h"
-"${abstract_dir}/headers/math.h"
+"${abstract_dir}/headers/external.h"
 "${abstract_dir}/headers/include.h"
 )
 
@@ -57,7 +56,7 @@ set(absract_sources
 "${abstract_dir}/shaders.cpp"
 "${abstract_dir}/textures.cpp"
 "${abstract_dir}/startup.cpp"
-"${abstract_dir}/math.cpp"
+"${abstract_dir}/external.cpp"
 )
 
 
@@ -78,12 +77,7 @@ find_library(lib-glfw3path libglfw3.a)
 target_link_libraries(lib-console PRIVATE ${lib-glfw3path})
 # GLEW
 find_package(GLEW REQUIRED)
-if (GLEW_FOUND)
-    message(STATUS "GLEW was found")
-    target_link_libraries(lib-console PRIVATE GLEW::GLEW)
-else()
-    message(STATUS "GLEW could not be found")
-endif()
+target_link_libraries(lib-console PRIVATE GLEW::GLEW)
 
 # DLL
 target_link_libraries(lib-console PRIVATE ${CMAKE_DL_LIBS})
@@ -91,15 +85,15 @@ target_link_libraries(lib-console PRIVATE ${CMAKE_DL_LIBS})
 # STBI IMAGE
 target_link_libraries(lib-console PRIVATE lib-stbi_image)
 
-# freetype2
-target_link_libraries(lib-console PRIVATE lib-freetype)
-
-# glm
-target_link_libraries(lib-console PRIVATE glm_static)
+# FREETYPE
+find_package(Freetype REQUIRED)
+target_link_libraries(lib-console PRIVATE libfreetype.a)
+target_include_directories(lib-console PUBLIC "freetype2")
+target_include_directories(lib-console PUBLIC ${FREETYPE_INCLUDE_DIRS})
+message(STATUS "${FREETYPE_LIBRARIES}\n-- ${FREETYPE_INCLUDE_DIRS}")
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
 target_include_directories(lib-console PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
 target_include_directories(lib-console PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
-

@@ -24,7 +24,7 @@
 #ifndef ABSTRACT_INCLUDE_H
 #define ABSTRACT_INCLUDE_H
 
-#include "math.h"
+#include "external.h"
 
 namespace abstractgl
 {

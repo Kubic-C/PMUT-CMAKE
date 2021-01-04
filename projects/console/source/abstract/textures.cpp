@@ -74,6 +74,22 @@ namespace abstractgl
 		bind();
     }
 
+    void texture::load_sub_image(int width, int height, void* pixels)
+    {
+        bind();
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RED,
+            width,
+            height,
+            0,
+            GL_RED,
+            GL_UNSIGNED_BYTE,
+            pixels
+        );
+    }
+
     image texture::get_image()
     {
         return image_texture;
