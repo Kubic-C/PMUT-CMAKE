@@ -22,10 +22,9 @@
 #include "headers/base.h"
 #include <iostream>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H  
+
 namespace console
 {
-    void lib_test()
-    {
-        std::cout << "library test - Console\n";
-    }
 }

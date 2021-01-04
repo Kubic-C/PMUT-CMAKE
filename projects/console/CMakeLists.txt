@@ -27,11 +27,13 @@ set(console_dir "source/console")
 #all headers(.h) in the console dir
 set(console_headers 
 "${console_dir}/headers/base.h"
+"${console_dir}/headers/text.h"
 )
 
 #all source(.cpp) files in the console dir
 set(console_sources 
 "${console_dir}/base.cpp"
+"${console_dir}/text.cpp"
 )
 
 #dir to abstract ------
@@ -67,14 +69,14 @@ add_library(
     ${absract_sources}
 )
 
-#EXTERNAL
-#OPENGL 
+# EXTERNAL
+# OPENGL 
 find_package(OpenGL REQUIRED)
 target_link_libraries(lib-console PRIVATE OpenGL::GL)
-#GLFW
+# GLFW
 find_library(lib-glfw3path libglfw3.a)
 target_link_libraries(lib-console PRIVATE ${lib-glfw3path})
-#GLEW
+# GLEW
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
     message(STATUS "GLEW was found")
@@ -83,11 +85,17 @@ else()
     message(STATUS "GLEW could not be found")
 endif()
 
-#DLL
+# DLL
 target_link_libraries(lib-console PRIVATE ${CMAKE_DL_LIBS})
 
-#STBI IMAGE
+# STBI IMAGE
 target_link_libraries(lib-console PRIVATE lib-stbi_image)
+
+# freetype2
+target_link_libraries(lib-console PRIVATE lib-freetype)
+
+# glm
+target_link_libraries(lib-console PRIVATE glm_static)
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
 target_include_directories(lib-console PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source")

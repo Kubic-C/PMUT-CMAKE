@@ -20,12 +20,11 @@
 
 */
 
-#include "console/headers/base.h"
+#include "console/headers/text.h"
 #include "HLnetwork/headers/base.h"
 
 int main(int argc, char *argv[])
 {
-    console::lib_test();
-    hlnet::lib_test();
+    console::test_freetype();
     return 0;
 }

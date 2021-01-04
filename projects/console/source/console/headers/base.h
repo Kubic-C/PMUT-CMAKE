@@ -19,6 +19,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
+
+/*
+    this library("console") will
+    deal with input and output of
+    pmut's console. input meaining 
+    user input from external devices(mouse, 
+    keyboard etc.) and output meaning rendering
+    to the window.
+*/
 #ifndef CONSOLE_BASE_H
 #define CONSOLE_BASE_H
 
@@ -26,7 +35,6 @@
 
 namespace console
 {   
-    void lib_test();
 }
 
 #endif // CONSOLE_BASE_H

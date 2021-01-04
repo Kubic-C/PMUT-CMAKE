@@ -70,11 +70,11 @@ namespace abstractgl
 
         // add all shaders inside of program
         template<typename ... shaders_p>
-        program(shaders_p& ... shaders_a)
+        program(std::string& err, shaders_p& ... shaders_a)
         : id(glCreateProgram())
         {
             ((attach(shaders_a)), ... );
-            std::string error = link();
+            err = link();
             ((shaders_a.delete_s()), ... );
         }
 
