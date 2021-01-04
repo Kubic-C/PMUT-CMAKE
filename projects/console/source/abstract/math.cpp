@@ -19,14 +19,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
-#ifndef CONSOLE_BASE_H
-#define CONSOLE_BASE_H
 
-#include "abstract/headers/include.h"
+#include "headers/math.h"
 
-namespace console
-{   
-    void lib_test();
+namespace abstractgl
+{
+    namespace math
+    {
+
+    }
 }
-
-#endif // CONSOLE_BASE_H

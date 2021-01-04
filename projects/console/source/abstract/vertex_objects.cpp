@@ -22,7 +22,7 @@
 
 #include "headers/vertex_objects.h"
 
-namespace abstract
+namespace abstractgl
 {
     // vertex buffer definitions
     vertex_buffer::vertex_buffer(unsigned int id_, unsigned int type_)

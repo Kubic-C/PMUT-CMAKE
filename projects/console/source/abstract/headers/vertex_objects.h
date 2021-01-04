@@ -28,7 +28,7 @@
 
 #include "base.h"
 
-namespace abstract
+namespace abstractgl
 {
     /*
         vertex buffer(vertex buffer object(s) - vbo) are buffers

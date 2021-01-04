@@ -17,10 +17,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.#
 #
 
-add_executable(pmut source/main.cpp)
 
-#EXTERNAL
+add_library(
+    lib-stbi_image
+    source/stbi_image.h
+)
+    
+#setting the linker tangy | https://stackoverflow.com/questions/61235133/cmake-can-not-determine-linker-language-for-target-c
+set_target_properties(lib-stbi_image PROPERTIES LINKER_LANGUAGE CXX)
 
-#INTERNAL
-target_link_libraries(pmut PRIVATE lib-console)
-target_link_libraries(pmut PRIVATE lib-hlnetwork)
+# makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
+target_include_directories(lib-stbi_image PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
+

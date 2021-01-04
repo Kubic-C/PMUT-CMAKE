@@ -26,6 +26,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lglfw3 -lGLU -lGL -lX11 -lXxf86vm -lXra
 
 #EXTERNAL
 add_subdirectory(depend/asio)
+add_subdirectory(depend/stbi_image)
 
 #INTERNAL
 add_subdirectory(projects/console)

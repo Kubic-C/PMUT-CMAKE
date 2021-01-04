@@ -19,14 +19,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
-#ifndef CONSOLE_BASE_H
-#define CONSOLE_BASE_H
 
-#include "abstract/headers/include.h"
+/*
+    math.h deals with vector math and other related
+    graphics math. I am not including GLM 
+    since the math that this projects requires is not
+    much
+*/
 
-namespace console
-{   
-    void lib_test();
+#ifndef ABSTRACT_MATH_H
+#define ABSTRACT_MATH_H
+
+#include "startup.h"
+
+namespace abstractgl
+{
+    namespace math
+    {
+
+    }
 }
 
-#endif // CONSOLE_BASE_H
+#endif // ABSTRACT_MATH_H

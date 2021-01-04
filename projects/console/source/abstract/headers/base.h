@@ -42,7 +42,7 @@
 #define DEFAULT_VBUFFER_SPACE 1024
 
 //namespace abstract for all abstract opengl objects
-namespace abstract
+namespace abstractgl
 {
 }
 

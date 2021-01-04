@@ -24,7 +24,7 @@
 
 #include "vertex_objects.h"
 
-namespace abstract
+namespace abstractgl
 {
     /*
         shaders are "half-programs" that run on the GPU

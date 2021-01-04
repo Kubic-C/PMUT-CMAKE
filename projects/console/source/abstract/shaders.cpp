@@ -22,7 +22,7 @@
 
 #include "headers/shaders.h"
 
-namespace abstract
+namespace abstractgl
 {
     // shader method definitions
     shader::shader(unsigned int type)

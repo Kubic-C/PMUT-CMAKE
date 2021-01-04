@@ -42,6 +42,8 @@ set(absract_headers
 "${abstract_dir}/headers/base.h"
 "${abstract_dir}/headers/vertex_objects.h"
 "${abstract_dir}/headers/shaders.h"
+"${abstract_dir}/headers/textures.h"
+"${abstract_dir}/headers/startup.h"
 )
 
 #all source(.cpp) in the abstract dir
@@ -49,6 +51,8 @@ set(absract_sources
 "${abstract_dir}/base.cpp"
 "${abstract_dir}/vertex_objects.cpp"
 "${abstract_dir}/shaders.cpp"
+"${abstract_dir}/textures.cpp"
+"${abstract_dir}/startup.cpp"
 )
 
 
@@ -61,7 +65,7 @@ add_library(
 )
 
 #EXTERNAL
-#OPENGL
+#OPENGL 
 find_package(OpenGL REQUIRED)
 target_link_libraries(lib-console PRIVATE OpenGL::GL)
 #GLFW
@@ -75,11 +79,16 @@ if (GLEW_FOUND)
 else()
     message(STATUS "GLEW could not be found")
 endif()
+
 #DLL
 target_link_libraries(lib-console PRIVATE ${CMAKE_DL_LIBS})
+
+#STBI IMAGE
+target_link_libraries(lib-console PRIVATE lib-stbi_image)
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
 target_include_directories(lib-console PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
 target_include_directories(lib-console PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
+
