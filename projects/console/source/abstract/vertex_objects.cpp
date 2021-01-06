@@ -31,9 +31,8 @@ namespace abstractgl
     }
 
     vertex_buffer::vertex_buffer(unsigned int type_)
-       : type(type_)
     {
-        glGenBuffers(1, &id);
+        gen(type_);
     }
 
     vertex_buffer::vertex_buffer()
@@ -71,6 +70,12 @@ namespace abstractgl
     void vertex_buffer::unbind()
     {
         glBindBuffer(DEFAULT_BUFFER_TARGET, 0); 
+    }
+
+    void vertex_buffer::gen(unsigned int new_type)
+    {
+        type = new_type;
+        glGenBuffers(1, &id);
     }
 
     // vertex array definitions

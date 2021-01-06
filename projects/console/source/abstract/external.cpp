@@ -24,7 +24,7 @@
 
 namespace abstractgl
 {
-    void set_pixel_restriction(int size)
+    void set_byte_restriction(int size)
     {
         glPixelStorei(GL_UNPACK_ALIGNMENT, size);
     }
@@ -34,7 +34,7 @@ namespace abstractgl
     {
         bool startup(FT_Library* lib_ft)
         {
-            if(FT_Init_FreeType(lib_ft))
+            if(FT_Init_FreeType(&*lib_ft))
             {
                 return false;
             }
@@ -42,22 +42,20 @@ namespace abstractgl
             return true;
         }
 
-        bool new_face(FT_Library lib_ft, std::string dir, glm::ivec2 dim, FT_Face* new_face)
+        bool new_face(FT_Library lib_ft, std::string dir_, glm::ivec2 dim, FT_Face* new_face)
         {
-            bool face_bad = FT_New_Face(lib_ft, dir.c_str(), 0, new_face);
-            if(!face_bad)
+            const char* dir = dir_.c_str();
+            bool face_bad = FT_New_Face(lib_ft, dir, 0, new_face);
+            if(face_bad)
                 return face_bad;
-
 
             FT_Set_Pixel_Sizes(*new_face, dim.x, dim.y);
             return face_bad;
         }
 
-        FT_GlyphSlot load_char(FT_Face face, char character)
+        bool load_char(FT_Face& face, char character)
         {
-            FT_GlyphSlot glyph = nullptr;
-            FT_Load_Char(face, character, FT_LOAD_RENDER);
-            return glyph;
+            return FT_Load_Char(face, character, FT_LOAD_RENDER); 
         }
     }
 }

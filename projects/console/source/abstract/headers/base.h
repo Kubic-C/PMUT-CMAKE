@@ -45,6 +45,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 #define DEFAULT_BUFFER_TARGET GL_ARRAY_BUFFER
 #define DEFAULT_VBUFFER_SPACE 1024

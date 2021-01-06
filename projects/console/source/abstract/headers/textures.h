@@ -36,6 +36,12 @@ namespace abstractgl
         int width, height, nr_channels;
     };
 
+    // binds to zero
+    void unbind_texture();
+
+    // this will activate a texture slot, remember that use GL_TEXTURE, not a 1, 0, or 2 for example.
+    void activate_texture(unsigned int slot);
+
     /*
         textures in opengl make it possible to take images
         and apply them to shapes in a window.
@@ -56,8 +62,15 @@ namespace abstractgl
         // unbind the texture
         void unbind();
 
-        // this will make a sub texture
-        void load_sub_image(int width, int height, void* pixels);
+        // glTexImage
+        void load_tex_image(
+            unsigned int type,
+            unsigned int internal_format, 
+            unsigned int format,
+            int width, 
+            int height,
+            void* pixels
+        );
 
         // load an image, returns false for bad file, and true for successful load
         // note: this does not set the glTex parameters, you will have to set those

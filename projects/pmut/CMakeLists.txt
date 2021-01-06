@@ -24,3 +24,6 @@ add_executable(pmut source/main.cpp)
 #INTERNAL
 target_link_libraries(pmut PRIVATE lib-console)
 target_link_libraries(pmut PRIVATE lib-hlnetwork)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

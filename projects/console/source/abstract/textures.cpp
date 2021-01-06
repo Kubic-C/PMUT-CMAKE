@@ -26,6 +26,17 @@
 
 namespace abstractgl
 {
+
+    void unbind_texture()
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void activate_texture(unsigned int slot)
+    {
+        glActiveTexture(slot);
+    }
+
     // texture method definitions
 
     texture::texture()
@@ -70,24 +81,31 @@ namespace abstractgl
 
     void texture::activate(unsigned int slot)
     {
-        glActiveTexture(slot); // activate the texture unit first before binding texture
+        activate_texture(slot); // activate the texture slot first before binding texture
 		bind();
     }
 
-    void texture::load_sub_image(int width, int height, void* pixels)
+    void texture::load_tex_image(
+        unsigned int type,
+        unsigned int internal_format, 
+        unsigned int format,
+        int width, 
+        int height,
+        void* pixels)
     {
         bind();
         glTexImage2D(
             GL_TEXTURE_2D,
             0,
-            GL_RED,
+            internal_format,
             width,
             height,
             0,
-            GL_RED,
-            GL_UNSIGNED_BYTE,
+            format,
+            type,
             pixels
         );
+        unbind();
     }
 
     image texture::get_image()

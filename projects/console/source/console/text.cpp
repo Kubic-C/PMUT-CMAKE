@@ -27,7 +27,7 @@ namespace console
 {
     void lib_test_console()
     {
-        std::cout << "console lib test" << render::current_font << '\n';
+        std::cout << "console lib test" << '\n';
     }
 
     font::font()
@@ -59,44 +59,59 @@ namespace console
             if(abstractgl::ft::load_char(face, c))
             {
                 err += std::string(FAILED_TO_LOAD_GLYPH) + c;
-        
+                continue;
             }
             else
             {
                 character character;
-                character.bitmap.bind();
-                abstractgl::set_default_bitmap_tex_args();
-                character.bitmap.load_sub_image(
+                character.bitmap.load_tex_image(
+                    GL_UNSIGNED_BYTE,
+                    GL_RED,
+                    GL_RED,
                     face->glyph->bitmap.width, 
-                    face->glyph->bitmap.width,
+                    face->glyph->bitmap.rows,
                     face->glyph->bitmap.buffer
                 );
+                character.bitmap.bind();
+                abstractgl::set_default_bitmap_tex_args();
+
+                character.char_id = c;
                 character.advance = face->glyph->advance.x;
                 character.size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
                 character.bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
-                char_set[character.char_id] = character;
+
+                char_set[character.char_id] = std::move(character);
             }
         }
 
+        abstractgl::unbind_texture();
         FT_Done_Face(face);
+    }
+
+    void font::set_library(FT_Library lib_ft)
+    {
+        this->lib_ft = lib_ft;
     }
 
     namespace render
     {
         void startup(std::string dir_to_shader, float width, float height)
         {
-            font_vbo.set_type(GL_ARRAY_BUFFER);
-
             std::string vertex_err, fragment_err, program_err;
             abstractgl::shader vertex(GL_VERTEX_SHADER);
             abstractgl::shader fragment(GL_FRAGMENT_SHADER);
 
-            vertex.set_shader_src_from_file(dir_to_shader, "vertex");
-            fragment.set_shader_src_from_file(dir_to_shader, "fragment");
+            if(!vertex.set_shader_src_from_file(dir_to_shader, "vertex")  ||
+               !fragment.set_shader_src_from_file(dir_to_shader, "fragment"))
+            {
+                std::cout << dir_to_shader << '\n' <<
+                        "is invalid\n";
+                return;
+            }
 
             vertex_err = vertex.compile();
             fragment_err = fragment.compile();
-
+            
             font_program.attach(vertex);
             font_program.attach(fragment);
 
@@ -107,40 +122,50 @@ namespace console
                       << program_err  << '\n';
 
             set_projection_dim(width, height);
+
+            font_vao.bind();
+            font_vbo.gen(GL_ARRAY_BUFFER);
+            font_vbo.buffer_data(sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+
+            font_vbo.bind();
+            font_vao.vertex_attrib_pointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+            font_vbo.unbind();
         }
 
         void set_projection_dim(float width, float height)
         {
-            projection = glm::ortho(0.0f, width, 0.0f, height);
+            projection = glm::ortho(0.0f, width, 0.0f, height); 
+            font_program.use();
             glUniformMatrix4fv(glGetUniformLocation(font_program.get_id(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         }
 
-        void bind_font(font* new_font)
+        void use_font(font& new_font)
         {
             current_font = new_font;
         }
 
         void render_text(render_data render_data)
         {
-            font& render_font = *current_font;
-            
             font_program.use();
-            glUniform3f(glGetUniformLocation(font_program.get_id(), "textColor"), 
-                            render_data.color.x, render_data.color.y, render_data.color.z);
-            font_vao.bind();
+            auto location = glGetUniformLocation(font_program.get_id(), "textColor");
+            glUniform3f(
+                location,
+                render_data.color.x,
+                render_data.color.y,
+                render_data.color.z
+            );
 
-            for(char render_char : render_data.str)
+            for(auto c : render_data.str)
             {
-                character ch = render_font.char_set[render_char];
+                character& ch = current_font.char_set[c];
 
                 float xpos = render_data.position.x + ch.bearing.x * render_data.scale;
-                float ypos = render_data.position.y - (ch.size.y - ch.bearing.y) * render_data.scale;
+                float ypos = render_data.position.y - (ch.bearing.x - ch.bearing.y) * render_data.scale;
 
                 float w = ch.size.x * render_data.scale;
                 float h = ch.size.y * render_data.scale;
 
-                float vertices[6][4] = 
-                {
+                float vertices[6][4] = {
                     { xpos,     ypos + h,   0.0f, 0.0f },            
                     { xpos,     ypos,       0.0f, 1.0f },
                     { xpos + w, ypos,       1.0f, 1.0f },
@@ -148,17 +173,18 @@ namespace console
                     { xpos,     ypos + h,   0.0f, 0.0f },
                     { xpos + w, ypos,       1.0f, 1.0f },
                     { xpos + w, ypos + h,   1.0f, 0.0f }           
-               };
+                };
 
-                ch.bitmap.activate(0);
+                ch.bitmap.bind();
                 font_vbo.update_buffer(sizeof(vertices), vertices);
+
                 glDrawArrays(GL_TRIANGLES, 0, 6);
 
-                render_data.position.x += (ch.advance >> 6) * render_data.scale;  // advance is 1/64 pixels. bitshift by 6 to get value in pixels (2^6 = 64)
+                render_data.position.x += (ch.advance >> 6) * render_data.scale;
             }
 
             font_vao.unbind();
-            glBindTexture(GL_TEXTURE_2D, 0);
+            abstractgl::unbind_texture();
         }
 
          // render "render data"

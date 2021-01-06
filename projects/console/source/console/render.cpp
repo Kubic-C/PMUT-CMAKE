@@ -11,7 +11,7 @@ namespace console
 {
     namespace render
     {
-        font* current_font = nullptr;
+        font current_font;
 
         abstractgl::program font_program;
 

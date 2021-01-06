@@ -35,7 +35,7 @@
 namespace abstractgl
 {
     // glPixelStorei(GL_UNPACK_ALIGNMENT, size);
-    void set_pixel_restriction(int size);
+    void set_byte_restriction(int size);
 
     // freetype
     namespace ft 
@@ -51,7 +51,7 @@ namespace abstractgl
         bool new_face(FT_Library lib_ft, std::string dir, glm::ivec2 dim, FT_Face* new_face);
 
         // FT_Load_Char
-        FT_GlyphSlot load_char(FT_Face face, char character);
+        bool load_char(FT_Face& face, char character);
     }
 }
 

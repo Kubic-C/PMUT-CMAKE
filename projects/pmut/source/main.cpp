@@ -23,52 +23,69 @@
 #include "console/headers/text.h"
 #include "HLnetwork/headers/base.h"
 
+void error_callback(int error_code, const char* error_def)
+{
+    std::cout << error_code << ": " << error_def << '\n';
+}
+
 int main()
 {
-    std::string gl_err;
-    GLFWwindow* window;
-    abstractgl::startup(window, abstractgl::window_data("render test",
-         1000, 1000), gl_err, 3, 3);
-    std::cout << gl_err << '\n';
+     if(console::gl_libs.error_exit_code)
+        return console::gl_libs.error_exit_code;
 
-    if(!window)
-    {
-        return -2;
-    }
+    // with out glBlend, textures cannot 'blend'
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    abstractgl::set_pixel_restriction(1);
-
-    FT_Library lib_ft;
-    if(!abstractgl::ft::startup(&lib_ft))
-    {
-        std::cout << "could not start freetype\n";
-        return -1;
-    }
-
-    std::string font_err;
-    console::lib_test_console();
+    // set the window information
+    console::gl_libs.set_window_size(glm::ivec2(1000, 1000));
+    console::gl_libs.set_window_title("render test");
     
-    //std::cout << font_err << '\n';
-    //test_font.compute_characters(0, 128, font_err);
-    //std::cout << font_err << '\n';
+    // set the error callback, this makes getting error alot more easier
+    glfwSetErrorCallback(&error_callback);
+    
+    // this is the font the rendering interface will use
+    console::font test_font;
+    test_font.set_library(console::gl_libs.lib_ft);
 
-   // console::render::bind_font(&test_font);
-/*
+    // default for opengl is 4, but freetype needs it to 1
+    abstractgl::set_byte_restriction(1);
+
+    // load the bitmap that the rendering interface will use
+    std::string font_err;
+    test_font.load_bitmap("../pmut/misc/fonts/Antonio-Regular.ttf", font_err);
+    std::cout << font_err << '\n';
+    if(font_err == FAILED_TO_LOAD_FACE)
+        return -1;
+
+    // compute the characters, so load every ASCII character
+    test_font.compute_characters(0, 128, font_err);
+    std::cout << font_err << '\n';
+
+    // free the ft library since it is no longer needed
+    FT_Done_FreeType(console::gl_libs.lib_ft);
+
+    // use the test font
+    console::render::use_font(test_font);
+
+    // startup the rendering interface
     console::render::startup(
-        "./release/misc/shaders/font.glsl", 1000, 1000);
+        "../pmut/misc/shaders/font.glsl", 1000, 1000);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    while(!glfwWindowShouldClose(window))
+    while(!glfwWindowShouldClose(console::gl_libs.window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
         console::render::render_text("this is a test", 
-            glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1000.f/2, 1000.f/2), 1);
+            glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1000.f/2, 1000.f/2), 1.0f);
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(console::gl_libs.window);
 
         glfwPollEvents();
     }
-*/
+
+    glfwTerminate();
     return 0;
 }

@@ -70,6 +70,9 @@ namespace abstractgl
         // vbo is bound wehther or not you call this method
         void unbind();
 
+        // this will generate a new buffer
+        void gen(unsigned int type);
+
     private:
         unsigned int id; // the vbo's id given by opengl
         unsigned int type; // the type of data stored in the buffer
@@ -92,7 +95,7 @@ namespace abstractgl
         // currently bound vbo, also adding the vbo to the vao
         void vertex_attrib_pointer(
             unsigned int index, // where in the array
-            unsigned int size,  // 1 for 1D, 2 for 2D, etc.
+            unsigned int size,  // 
             unsigned int type,  // GL_FLOAT, etc.
             unsigned char norm, // is normalized(already a float)
             int stride,         // how many bytes to get to the vertex

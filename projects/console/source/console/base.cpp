@@ -23,4 +23,5 @@
 
 namespace console
 {
+    abstractgl::init gl_libs;
 }

@@ -35,6 +35,7 @@
 
 namespace console
 {
+
     struct character
     {
         char char_id; // character id ASCII
@@ -59,6 +60,9 @@ namespace console
 
         // parse data - will pre compute everything
         void compute_characters(int min, int max, std::string& err);
+
+        // sets the ft library member
+        void set_library(FT_Library lib_ft);
 
     public: // members ---
         std::map<char, character> char_set;
@@ -95,7 +99,7 @@ namespace console
         
         // static extern
         // the render will use whatever fount is currently 'bound'
-        extern font* current_font;
+        extern font current_font;
 
         // this is the render shader program, is uses ./release/misc/shaders/font.glsl'
         extern abstractgl::program font_program;
@@ -115,8 +119,8 @@ namespace console
         // this will set the projection to a new screen width height
         void set_projection_dim(float width, float height);
 
-        // this will bind a new font, binding a new font will of course overwrite the new one
-        void bind_font(font* new_font);
+        // this will use a new font, using a new font will of course overwrite the new one
+        void use_font(font& new_font);
 
         // render "render data"
         void render_text(render_data render_data);
