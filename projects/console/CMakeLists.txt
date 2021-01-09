@@ -55,7 +55,6 @@ target_link_libraries(lib-console PRIVATE lib-stbi_image)
 # FREETYPE
 find_package(Freetype REQUIRED)
 target_link_libraries(lib-console PRIVATE ${FREETYPE_LIBRARIES})
-target_include_directories(lib-console PUBLIC "freetype2")
 target_include_directories(lib-console PUBLIC ${FREETYPE_INCLUDE_DIRS})
 message(STATUS "${FREETYPE_LIBRARIES}\n-- ${FREETYPE_INCLUDE_DIRS}")
 

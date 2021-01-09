@@ -24,8 +24,8 @@
     text.h deals with rendering text(hence the name)
 */
 
-#ifndef CONSOLE_BITMAP_H
-#define CONSOLE_BITMAP_H
+#ifndef CONSOLE_RENDER_H
+#define CONSOLE_RENDER_H
 
 #include "base.h"
 
@@ -112,4 +112,4 @@ namespace console
     };
 }
  
-#endif // CONSOLE_BITMAP_H
+#endif // CONSOLE_RENDER_H

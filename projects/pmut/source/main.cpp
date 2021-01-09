@@ -20,7 +20,7 @@
 
 */
 
-#include "console/headers/text.h"
+#include "console/headers/render.h"
 #include "HLnetwork/headers/base.h"
 #include <chrono>
 
@@ -40,15 +40,18 @@ MessageCallback( GLenum source,
 int main()
 {
     std::string gl_str; 
-    GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 1000, 1000), gl_str, 4, 6);
+    GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 800, 640), gl_str, 4, 0);
     std::cout << gl_str << '\n';
 
-    //glEnable(GL_DEBUG_OUTPUT);
-    //glDebugMessageCallback( MessageCallback, 0 );
+    if(!window)
+    {
+        std::cout << "failed to create window\n";
+        return 1;
+    }
 
     abstractgl::enable_blend();
 
-    // start the ft library, extract the font and then pass it to the render context
+    // start the ft library, extract the font and then pass it to the render context //
     abstractgl::ft::lib_ft freetype;
     freetype.start();
 
@@ -66,27 +69,22 @@ int main()
     abstractgl::program font_program = 
             abstractgl::compile_shaders("./misc/shaders/font.glsl", "vertex", "fragment");
 
-
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(1000), 0.0f, static_cast<float>(1000));
-    font_program.use();
-    glUniformMatrix4fv(glGetUniformLocation(font_program.get_id(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
     // setup the render context
     console::render_context render;
     render.use_font(std::move(font));
     render.use_program(font_program);
-
-    int x, y;
-    glfwGetWindowSize(window, &x, &y);
-    render.set_start(10, 1000);
-    render.set_projection(glm::ortho(0.0f, static_cast<float>(x), 0.0f, static_cast<float>(y)));
-
 
     glClearColor(0.0, 0.0, 0.4, 1.0);
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 
+
+        int x, y;
+        glfwGetWindowSize(window, &x, &y);
+        glViewport(0, 0, x, y);
+        render.set_start(10, y);
+        render.set_projection(glm::ortho(0.0f, static_cast<float>(x), 0.0f, static_cast<float>(y)));
 
         render.full_bind();
         render.print(std::string((const char*)glGetString(GL_VERSION)), glm::vec3(sin(glfwGetTime()), 0.5f, 0.5f), 1.0f);
