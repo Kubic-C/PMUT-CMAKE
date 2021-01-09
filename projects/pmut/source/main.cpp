@@ -24,19 +24,6 @@
 #include "HLnetwork/headers/base.h"
 #include <chrono>
 
-void GLAPIENTRY
-MessageCallback( GLenum source,
-                 GLenum type,
-                 GLuint id,
-                 GLenum severity,
-                 GLsizei length,
-                 const GLchar* message,
-                 const void* userParam )
-{
-    std::cout << message << '\n';
-}
-
-
 int main()
 {
     bool is_good = false;
