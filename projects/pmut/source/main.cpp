@@ -52,7 +52,7 @@ int main()
     abstractgl::ft::lib_ft freetype;
     freetype.start();
     abstractgl::ft::font font;
-    if(!font.load_font(freetype, "./misc/fonts/Antonio-Regular.ttf"))
+    if(!font.load_font(freetype, "./misc/fonts/ye.0tf"))
         return 1;
 
     
@@ -88,21 +88,28 @@ int main()
     render.set_start(0, 900);
     render.set_projection(glm::ortho(0.0f, static_cast<float>(x), 0.0f, static_cast<float>(y)));
 
+
     glClearColor(0.0, 0.0, 0.4, 1.0);
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 
 
-        auto start = std::chrono::high_resolution_clock::now();
-
+        render.full_bind();
+        render.print(std::string("hello world, this is PMUT!"), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
         render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
         render.print_poll();
-        
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start;
-        using namespace std::chrono_literals;
-        std::cout << duration.count()*1000 << '\n';
+        render.full_unbind();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

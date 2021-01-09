@@ -68,8 +68,8 @@ namespace console
         // use this to, note: the font already has to have a computed char set. use std::move to prevent creating copies
         void use_font(abstractgl::ft::font&& font);
 
-        // free print allows you to print anywhere on the screen
-        // note: overusing this function can result in lower framerate
+        // free print allows you to print anywhere on the screen, when printing always call full_bind() before doing so
+        // note: overusing this function can result in a higher frametime which is slower
         void free_print(std::string text, glm::vec2 pos, glm::vec3 color, float scale);
 
         // print will print text onto the screen but only on the top left hand side
@@ -77,13 +77,13 @@ namespace console
         // note: this will not print any text inside of the function, it will instead be printed when print_poll() is called
         void print(std::string text, glm::vec3 color, float scale);
 
-        /// draws everything in the output_buffer, then clearing it
+        /// draws everything in the output_buffer, then clearing it. when printing always call full_bind() before
         void print_poll();
 
         // this will parse the output buffer. whist also updating memory in VRAM
         void parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text);
 
-        // bind everything needed to print
+        // bind everything needed to print,
         void full_bind();
 
         // unbind everyting

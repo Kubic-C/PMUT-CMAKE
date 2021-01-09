@@ -84,14 +84,10 @@ namespace console
 
     void render_context::free_print(std::string text, glm::vec2 pos, glm::vec3 color, float scale)
     {
-        full_bind();
-
         std::vector<float> quads;
         parse_output(quads, pos, color, scale, text);
         font_vbo.update_buffer(sizeof(float)*quads.size(), &quads[0]);
         glDrawElements(GL_TRIANGLES, text.size()*6, GL_UNSIGNED_INT, nullptr);
-
-        full_unbind();
     }
 
     void render_context::print(std::string text, glm::vec3 color, float scale)
@@ -106,15 +102,11 @@ namespace console
 
     void render_context::print_poll()
     {
-        full_bind();
-
         font_vbo.update_buffer(sizeof(float)*output_buffer.size(), &output_buffer[0]);
         glDrawElements(GL_TRIANGLES, n_of_char*6, GL_UNSIGNED_INT, nullptr);
         output_buffer.clear();
         print_x = start.x; print_y = start.y; 
         n_of_char = 0;
-
-        full_unbind();
     }
 
     void render_context::full_bind()
