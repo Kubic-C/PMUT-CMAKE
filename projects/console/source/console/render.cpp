@@ -49,9 +49,9 @@ namespace console
         font_program = new_font_program;
     }
 
-    void render_context::use_font(abstractgl::ft::font&& new_text_font)
-    {
-        text_font = new_text_font;
+    void render_context::use_font(abstractgl::ft::font& new_text_font)
+    { 
+        text_font = &new_text_font;
     }
 
     void render_context::parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text)
@@ -60,9 +60,9 @@ namespace console
         float x = pos.x;
         for(auto c : text)
         {
-            switch(c) { case '\n': x = pos.x; pos.y -= text_font.highest_glpyh_size; continue; }
+            switch(c) { case '\n': x = pos.x; pos.y -= text_font->highest_glpyh_size; continue; }
 
-            abstractgl::ft::character& ch = text_font.char_set[c];
+            abstractgl::ft::character& ch = text_font->char_set[c];
 
             float x2 = x + ch.bearing.x * scale;
             float y2 = pos.y - (ch.size.y - ch.bearing.y) * scale;
@@ -85,6 +85,43 @@ namespace console
         }
     }
 
+    void render_context::parse_meta_str_vector(std::vector<meta_str> vector)
+    {
+        // save the position of x, so if there is a newline character x = pos.x
+        float x = print_x, y = print_y;
+        for(meta_str mstr : vector)
+        {
+            for(auto c : mstr.str)
+            {
+                switch(c) { case '\n': x = print_x; y -= text_font->highest_glpyh_size; continue; }
+
+                abstractgl::ft::character& ch = text_font->char_set[c];
+
+                float x2 = x + ch.bearing.x;
+                float y2 =y - (ch.size.y - ch.bearing.y);
+                float w = ch.size.x;
+                float h = ch.size.y;    
+
+                float x_width = x2 + w, y_height = y2 + h;
+                std::vector<float> tquad = // this will calculate the final vertex for the character
+                {   // vec2 - pos       // vec2 - tex coords                // vec3 - color
+                    x_width, y_height,  ch.tex_coords[0], ch.tex_coords[1], mstr.rgb.r, mstr.rgb.g, mstr.rgb.b,
+                    x2     , y_height,  ch.tex_coords[2], ch.tex_coords[3], mstr.rgb.r, mstr.rgb.g, mstr.rgb.b,
+                    x_width, y2      ,  ch.tex_coords[4], ch.tex_coords[5], mstr.rgb.r, mstr.rgb.g, mstr.rgb.b,
+                    x2     , y2      ,  ch.tex_coords[6], ch.tex_coords[7], mstr.rgb.r, mstr.rgb.g, mstr.rgb.b,
+                };
+
+                output_buffer.reserve(tquad.size());
+                output_buffer.insert(output_buffer.end(), tquad.begin(), tquad.end());
+                n_of_char++;
+
+                x += ch.advance;
+            }
+            y -= text_font->highest_glpyh_size;
+            x = print_x;
+        }
+    }
+
     void render_context::free_print(std::string text, glm::vec2 pos, glm::vec3 color, float scale)
     {
         std::vector<float> quads;
@@ -99,7 +136,7 @@ namespace console
         parse_output(text_quads, glm::ivec2(print_x, print_y), color, scale, text);
         output_buffer.reserve(text_quads.size());
         output_buffer.insert(output_buffer.end(), text_quads.begin(), text_quads.end());
-        print_y -= text_font.highest_glpyh_size;
+        print_y -= text_font->highest_glpyh_size;
         n_of_char += text.size();
     }
 
@@ -116,7 +153,7 @@ namespace console
     {
         font_vao.bind();
         font_program.use();
-        text_font.font_atlas.activate(GL_TEXTURE0);
+        text_font->font_atlas.activate(GL_TEXTURE0);
         font_indi.bind();
     }
 
@@ -129,7 +166,7 @@ namespace console
 
     void render_context::set_start(int x, int y)
     {
-        start.x = x, start.y = y - text_font.highest_glpyh_size;
+        start.x = x, start.y = y - text_font->highest_glpyh_size;
     }
 
     void render_context::set_projection(glm::fmat4 projection)

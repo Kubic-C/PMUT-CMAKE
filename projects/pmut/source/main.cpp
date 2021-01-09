@@ -20,7 +20,7 @@
 
 */
 
-#include "console/headers/render.h"
+#include "console/headers/manager.h"
 #include "HLnetwork/headers/base.h"
 #include <chrono>
 
@@ -39,15 +39,10 @@ MessageCallback( GLenum source,
 
 int main()
 {
-    std::string gl_str; 
-    GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 800, 640), gl_str, 4, 0);
-    std::cout << gl_str << '\n';
-
-    if(!window)
-    {
-        std::cout << "failed to create window\n";
-        return 1;
-    }
+    bool is_good = false;
+    console::manager console_test("manager test", 1000, 1000, is_good);
+    if(!is_good)
+        return -1;
 
     abstractgl::enable_blend();
 
@@ -55,6 +50,7 @@ int main()
     abstractgl::ft::lib_ft freetype;
     freetype.start();
 
+    std::string gl_str;
     abstractgl::ft::font font;
     if(!font.load_font(freetype, "./misc/fonts/ye.ttf"))
         return 1;
@@ -71,29 +67,29 @@ int main()
 
     // setup the render context
     console::render_context render;
-    render.use_font(std::move(font));
+    render.use_font(font);
     render.use_program(font_program);
+    console_test.use_render_context(render);
+    console_test.set_all_callbacks();
+
+    console_test.print((char*)glGetString(GL_VERSION), console::modifier::perma_mod, 2, 1.0f, 1.0f, 0.0f);
+
 
     glClearColor(0.0, 0.0, 0.4, 1.0);
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(console_test.window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 
 
-        int x, y;
-        glfwGetWindowSize(window, &x, &y);
-        glViewport(0, 0, x, y);
-        render.set_start(10, y);
-        render.set_projection(glm::ortho(0.0f, static_cast<float>(x), 0.0f, static_cast<float>(y)));
-
-        render.full_bind();
-        render.print(std::string((const char*)glGetString(GL_VERSION)), glm::vec3(sin(glfwGetTime()), 0.5f, 0.5f), 1.0f);
-        render.print("[ENGINE] -- test ---", glm::vec3(sin(glfwGetTime()), 0.5f, 0.5f), 1.0f);
-        render.print_poll();
-        render.full_unbind();
+        auto start = std::chrono::high_resolution_clock::now();
+        console_test.print("[PMUT]" + console_test.active_input, console::modifier::non_static_mod, 0, 1.0f, 1.0f, 1.0f);
+        console_test.poll();
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<float> duration = end - start;
+        console_test.print("[PMUT] frametime: " + std::to_string(duration.count()*1000), console::modifier::non_static_mod, 1, 1.0f, 0.6f, 0.6f);
 
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(console_test.window);
 
         /* Poll for and process events */
         glfwPollEvents();

@@ -21,7 +21,7 @@
 */
 
 /*
-    text.h deals with rendering text(hence the name)
+   render.h deals with rendering directly with opengl, it is a low-level to high-level file
 */
 
 #ifndef CONSOLE_RENDER_H
@@ -36,7 +36,22 @@
 
 namespace console
 {
-    int abstract_ft_test();
+    // used later in manager.h
+    enum class modifier
+    {
+        non_static_mod,
+        static_mod,
+        perma_mod,
+    };
+
+    // holds meta-data of a string. modifiers, and render piority
+    struct meta_str
+    {
+        modifier str_modifier = modifier::non_static_mod; // string modifier
+        std::string str = "";        // string
+        glm::vec3 rgb;                // rgb
+        int rp = 0;                  // render piority
+    };
 
     /* render_context
     * render context allows 
@@ -66,7 +81,7 @@ namespace console
         void use_program(abstractgl::program font_program);
 
         // use this to, note: the font already has to have a computed char set. use std::move to prevent creating copies
-        void use_font(abstractgl::ft::font&& font);
+        void use_font(abstractgl::ft::font& font);
 
         // free print allows you to print anywhere on the screen, when printing always call full_bind() before doing so
         // note: overusing this function can result in a higher frametime which is slower
@@ -83,6 +98,9 @@ namespace console
         // this will parse the output buffer. whist also updating memory in VRAM
         void parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text);
 
+        // this will parse a meta_str vector
+        void parse_meta_str_vector(std::vector<meta_str> vector);
+
         // bind everything needed to print,
         void full_bind();
 
@@ -97,7 +115,7 @@ namespace console
 
     private:
         abstractgl::program font_program; // this is shader program that will be responsible for rendering text
-        abstractgl::ft::font text_font; // this is the font that will be used to render
+        abstractgl::ft::font* text_font; // this is the font that will be used to render
         abstractgl::vertex_array font_vao; // contains how data should be read
         abstractgl::vertex_buffer font_vbo; // contains raw data
         abstractgl::vertex_buffer font_indi; // inidces
