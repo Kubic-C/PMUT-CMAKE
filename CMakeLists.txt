@@ -23,7 +23,7 @@ project(PMUT)
 set(BUILD_LINUX TRUE)
 
 if(BUILD_LINUX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lglfw3 -lGLU -lGL -lX11 -lXxf86vm -lXrandr -pthread -lXi -ldl -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lglfw3 -lGLU -lGL -lX11 -lXxf86vm -lXrandr -pthread -lXi -ldl -O3 -std=c++17")
 endif()
 
 #PMUT(PORTER MULTI USE TERMINAL) - networking, file manipulation, and live app manipulation

@@ -35,7 +35,6 @@
 
 namespace console
 {   
-    extern abstractgl::init gl_libs;
 }
 
 #endif // CONSOLE_BASE_H

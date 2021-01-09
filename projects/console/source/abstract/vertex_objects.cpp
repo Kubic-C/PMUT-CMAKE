@@ -91,7 +91,7 @@ namespace abstractgl
         bind();
         glVertexAttribPointer(index, size, 
                           type, norm, stride, offset);
-        glEnableVertexAttribArray(index);
+        glEnableVertexAttribArray(index); 
         unbind();
     }
 

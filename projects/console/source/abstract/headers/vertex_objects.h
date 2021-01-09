@@ -101,7 +101,7 @@ namespace abstractgl
             int stride,         // how many bytes to get to the vertex
             const void* offset  // where should it start
         );
-
+ 
         // binds the vao
         void bind();
 

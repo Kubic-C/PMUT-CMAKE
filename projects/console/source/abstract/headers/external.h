@@ -32,6 +32,10 @@
 
 #include "startup.h"
 
+#define FT_LIB_STARTUP_ERROR "could not start the freetype(2) library\n"
+#define FT_LIB_STARTUP_GOOD "startup of freetype(2) library succecced\n"
+#define FT_GLYPH_ERROR "failed to load gylph"
+
 namespace abstractgl
 {
     // glPixelStorei(GL_UNPACK_ALIGNMENT, size);
@@ -44,6 +48,14 @@ namespace abstractgl
             text rendering done - bad
         */
 
+        struct character 
+        {
+            std::vector<float> tex_coords; // texture coords of the character on the font atlas
+            glm::ivec2   size;      // Size of glyph
+            glm::ivec2   bearing;   // Offset from baseline to left/top of glyph
+            unsigned int advance;   // Horizontal offset to advance to next glyph
+        };
+
         // starts up the freetype library
         bool startup(FT_Library* lib_ft);
 
@@ -52,6 +64,49 @@ namespace abstractgl
 
         // FT_Load_Char
         bool load_char(FT_Face& face, char character);
+
+        // this is a simple wrapper for FT_Library types
+        class lib_ft
+        {
+        public:
+            lib_ft();
+            ~lib_ft();
+
+        public: // methods ---
+            // start freetype, returns true for good startup, return false for bad startup
+            bool start();
+
+            // end/cleanup/close freetype
+            void end();
+
+        public: // members ---
+            FT_Library lib;
+
+        };
+
+        // font allows a more simpler way to abstract .tff or .bff font files
+        // whilst still using the freetype library
+        class font
+        {
+        public:
+            font();
+            ~font();
+
+        public: // methods ---
+            // load a .tff or .bff file, true for good, false for bad
+            bool load_font(lib_ft& lib, std::string dir);
+
+            // compute the indivual characters
+            void compute_font(std::string& failed_char);
+
+            // cleanup the font
+            void end();
+
+        public:
+            std::map<char, character> char_set; // all characters
+            texture font_atlas; // all textures
+            FT_Face face; // FT_Face the font
+        };
     }
 }
 

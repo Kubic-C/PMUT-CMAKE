@@ -28,109 +28,57 @@
 #define CONSOLE_BITMAP_H
 
 #include "base.h"
-#include <map>
 
-#define FAILED_TO_LOAD_FACE "failed to load face"
-#define FAILED_TO_LOAD_GLYPH "failed to load glyph: "
+// I chose 10000 becuase, lets be real here 10000 characters is never going to 
+// be on the screen at once, and all modern GPU(2010 and after, in terms of VRAM) are going to
+// be able handle it.
+#define CHARACTER_RENDER_LIMIT 10000
 
 namespace console
 {
+    int abstract_ft_test();
 
-    struct character
-    {
-        char char_id; // character id ASCII
-        abstractgl::texture bitmap;
-        glm::ivec2 size;
-        glm::ivec2 bearing;
-        unsigned int advance;
-    };
-
-    /*
-        font will load a single texture
+    /* render_context
+    * render context allows 
+    * and simplies rendering
+    * text. along with other
+    * misc. renderings
+    * 
+    * it uses batch rendering
+    * to make rendering faster
+    * but with the downside of high
+    * VRAM usage, which is only 
+    * a couple of megabytes but
+    * a decent amout none the less.
+    * 
+    * increasing the CHARACTER_RENDER_LIMIT
+    * will also increase the amout of
+    * VRAM usage.
+    * 
     */
-    class font
+    class render_context
     {
     public:
-        font();
-        font(FT_Library lib_ft);
+        render_context();
 
-    public: // methods ---
-        // load a face/bitmap
-        void load_bitmap(std::string dir, std::string& err);
+    public: // methods
+        // use this to asign a shader program
+        void use_program(abstractgl::program font_program);
 
-        // parse data - will pre compute everything
-        void compute_characters(int min, int max, std::string& err);
+        // use this to, note: the font already has to have a computed char set. use std::move to prevent creating copies
+        void use_font(abstractgl::ft::font&& font);
 
-        // sets the ft library member
-        void set_library(FT_Library lib_ft);
+        // this will not acutally print anything, this will instead add to an output buffer
+        void print(glm::vec2 pos, glm::vec3 color, float scale, std::string text);
 
-    public: // members ---
-        std::map<char, character> char_set;
-        FT_Face face;
-        FT_Library lib_ft;
+        // this will parse the output buffer. whist also updating memory in VRAM
+        std::vector<float> parse_output(glm::vec2 pos, glm::vec3 color, float scale, std::string text);
+    private:
+        abstractgl::program font_program; // this is shader program that will be responsible for rendering text
+        abstractgl::ft::font text_font; // this is the font that will be used to render
+        abstractgl::vertex_array font_vao; // contains how data should be read
+        abstractgl::vertex_buffer font_vbo; // contains raw data
     };
-
-    void lib_test_console();
-
-    namespace render
-    {
-        // render_data holds some additional data of how a string should get print onto the screen
-        struct render_data
-        {
-            std::string str; // this is what will get output to the screen
-            glm::vec3 color; // this will control the color over the text
-            glm::vec2 position; // this will control the position of the string on screen
-            float scale; // this controls the size of the text
-        };
-
-        // render_inline_data holds some additional data of how a string should get print onto the screen
-        // this can print in a  horizontal list with other inline data, but you cannot control the position.
-        // example:
-        // some data 
-        // some other data
-        // === THIS IS WITH RENDER DATA(this lets you control the position) ===
-        // some data
-        //                     some other data
-        struct render_inline_data
-        {
-            std::string str; // this is what will get output to the screen
-            glm::vec3 color; // this will control the color over the text
-        };
-        
-        // static extern
-        // the render will use whatever fount is currently 'bound'
-        extern font current_font;
-
-        // this is the render shader program, is uses ./release/misc/shaders/font.glsl'
-        extern abstractgl::program font_program;
-
-        // this is the vertex array object responsible for holding vbo which hold data about text
-        extern abstractgl::vertex_array font_vao;
-
-        // holds raw data of whatever character position, this allows char position data to go onto the GPU
-        extern abstractgl::vertex_buffer font_vbo;
-
-        // projection matrix for rendering text
-        extern glm::mat4 projection;
-
-        // this will startup the renderer
-        void startup(std::string dir_to_shader, float width, float height);
-
-        // this will set the projection to a new screen width height
-        void set_projection_dim(float width, float height);
-
-        // this will use a new font, using a new font will of course overwrite the new one
-        void use_font(font& new_font);
-
-        // render "render data"
-        void render_text(render_data render_data);
-
-         // render "render data"
-        void render_text(std::string text, glm::vec3 color, glm::vec2 pos, float scale);
-
-        // render inline data poll
-        void render_inline_text(render_inline_data render_inline_data);
-    }
 }
  
 #endif // CONSOLE_BITMAP_H

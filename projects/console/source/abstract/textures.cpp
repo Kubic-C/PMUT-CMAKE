@@ -85,7 +85,7 @@ namespace abstractgl
 		bind();
     }
 
-    void texture::load_tex_image(
+    void texture::allocate(
         unsigned int type,
         unsigned int internal_format, 
         unsigned int format,
@@ -108,6 +108,30 @@ namespace abstractgl
         unbind();
     }
 
+    void texture::load_data(
+        unsigned int type,
+        unsigned int xoffset, 
+        unsigned int yoffset, 
+        unsigned int format,
+        int width, 
+        int height,
+        void* pixels)
+    { 
+        bind();
+        glTexSubImage2D(
+            GL_TEXTURE_2D,
+            0,
+            xoffset,
+            yoffset,
+            width,
+            height,
+            format,
+            type,
+            pixels
+        );
+        unbind(); 
+    }
+
     image texture::get_image()
     {
         return image_texture;
@@ -125,7 +149,7 @@ namespace abstractgl
 
     void set_default_bitmap_tex_args()
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);	
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

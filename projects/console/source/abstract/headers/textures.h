@@ -63,9 +63,20 @@ namespace abstractgl
         void unbind();
 
         // glTexImage
-        void load_tex_image(
+        void allocate(
             unsigned int type,
             unsigned int internal_format, 
+            unsigned int format,
+            int width, 
+            int height,
+            void* pixels
+        );
+
+        // glTexSubImage, space HAS to be already allocated for this to work
+        void load_data(
+            unsigned int type,
+            unsigned int xoffset, 
+            unsigned int yoffset, 
             unsigned int format,
             int width, 
             int height,

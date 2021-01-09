@@ -53,6 +53,9 @@ namespace abstractgl
     // output_parameter - creates a window and will make the windows context current, will return a nullptr if it could not create a window
     void create_window(GLFWwindow*& window, window_data window_data);
 
+    // enable textures that use alpha values when rendered on primtaves to look normal
+    void enable_blend();
+
     // creates a window and will make the windows context current, will return a nullptr if it could not create a window
     GLFWwindow* create_window(window_data window_data);
 

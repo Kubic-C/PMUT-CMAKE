@@ -22,70 +22,79 @@
 
 #include "console/headers/text.h"
 #include "HLnetwork/headers/base.h"
+#include <chrono>
 
-void error_callback(int error_code, const char* error_def)
+void error_callback(int error_code, const char* error_str)
 {
-    std::cout << error_code << ": " << error_def << '\n';
+    std::cout << error_code << ": " << error_str << '\n';
 }
 
 int main()
 {
-     if(console::gl_libs.error_exit_code)
-        return console::gl_libs.error_exit_code;
+    std::string gl_str; 
+    GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 1000, 1000), gl_str, 4, 0);
+    std::cout << gl_str << '\n';
 
-    // with out glBlend, textures cannot 'blend'
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glfwSetErrorCallback(error_callback);
 
-    // set the window information
-    console::gl_libs.set_window_size(glm::ivec2(1000, 1000));
-    console::gl_libs.set_window_title("render test");
+    abstractgl::enable_blend();
+
+    // start the ft library, extract the font and then pass it to the render context
+    abstractgl::ft::lib_ft freetype;
+    freetype.start();
+    abstractgl::ft::font font;
+    if(!font.load_font(freetype, "./misc/fonts/Antonio-Regular.ttf"))
+        return 1;
+
     
-    // set the error callback, this makes getting error alot more easier
-    glfwSetErrorCallback(&error_callback);
-    
-    // this is the font the rendering interface will use
-    console::font test_font;
-    test_font.set_library(console::gl_libs.lib_ft);
+    font.compute_font(gl_str);
+    std::cout << gl_str << '\n';
+    font.end();
+    freetype.end();
 
-    // default for opengl is 4, but freetype needs it to 1
-    abstractgl::set_byte_restriction(1);
+    // build an compile the shader program
+    abstractgl::shader vertex(GL_VERTEX_SHADER);
+    vertex.set_shader_src_from_file("./misc/shaders/font.glsl", "vertex");
+    abstractgl::shader fragment(GL_FRAGMENT_SHADER);
+    fragment.set_shader_src_from_file("./misc/shaders/font.glsl", "fragment");
+    std::string ferror, verror, perror;
+    verror = vertex.compile();
+    ferror = fragment.compile();
+    abstractgl::program font_program(perror, vertex, fragment);
+    std::cout << ferror << '\n' << verror << '\n' << perror << '\n';
+    if(ferror.find("succecced") == std::string::npos)
+        return 2;
 
-    // load the bitmap that the rendering interface will use
-    std::string font_err;
-    test_font.load_bitmap("../pmut/misc/fonts/Antonio-Regular.ttf", font_err);
-    std::cout << font_err << '\n';
-    if(font_err == FAILED_TO_LOAD_FACE)
-        return -1;
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(1000), 0.0f, static_cast<float>(1000));
+    font_program.use();
+    glUniformMatrix4fv(glGetUniformLocation(font_program.get_id(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    // compute the characters, so load every ASCII character
-    test_font.compute_characters(0, 128, font_err);
-    std::cout << font_err << '\n';
+    // setup the render context
+    console::render_context render;
+    render.use_font(std::move(font));
+    render.use_program(font_program);
 
-    // free the ft library since it is no longer needed
-    FT_Done_FreeType(console::gl_libs.lib_ft);
-
-    // use the test font
-    console::render::use_font(test_font);
-
-    // startup the rendering interface
-    console::render::startup(
-        "../pmut/misc/shaders/font.glsl", 1000, 1000);
-
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    while(!glfwWindowShouldClose(console::gl_libs.window))
+    glClearColor(0.0, 0.0, 0.4, 1.0);
+    while (!glfwWindowShouldClose(window))
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT); 
 
-        console::render::render_text("this is a test", 
-            glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1000.f/2, 1000.f/2), 1.0f);
+        auto start = std::chrono::high_resolution_clock::now();
 
-        glfwSwapBuffers(console::gl_libs.window);
+        render.print(glm::vec2(0, 900), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f, std::string(__DATE__));
 
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        using namespace std::chrono_literals;
+        std::cout << duration.count()*1000 << '\n';
+
+        /* Swap front and back buffers */
+        glfwSwapBuffers(window);
+
+        /* Poll for and process events */
         glfwPollEvents();
     }
 
-    glfwTerminate();
     return 0;
 }

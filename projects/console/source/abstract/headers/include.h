@@ -31,45 +31,6 @@
 
 namespace abstractgl
 {
-    // only use this when global varibles that use opengl
-    // are initialized before main
-    struct init
-    {   
-        GLFWwindow* window = nullptr;
-        FT_Library lib_ft = nullptr;
-        int error_exit_code = 0;
-
-        init()
-        {
-            std::string gl_err;
-            abstractgl::startup(window, abstractgl::window_data("--- NOT INITIALIZED ---", 10, 10), gl_err, PMUT_GL_VERSION);
-
-            if(gl_err.size() != 0)
-            {
-                std::cout << gl_err << '\n';
-                error_exit_code = -1;
-                return;
-            }
-
-            if(!abstractgl::ft::startup(&lib_ft))
-            {
-                std::cout << "could not start freetype\n";
-                int error_exit_code = -2;
-                return;
-            }
-        }
-
-        inline void set_window_size(glm::ivec2 dim)
-        {
-            glViewport(0, 0, dim.x, dim.y);
-            glfwSetWindowSize(window, dim.x, dim.y);
-        }
-
-        inline void set_window_title(std::string title)
-        {
-            glfwSetWindowTitle(window, title.c_str());
-        }
-    };
 }
 
 #endif // ABSTRACT_INCLUDE_H

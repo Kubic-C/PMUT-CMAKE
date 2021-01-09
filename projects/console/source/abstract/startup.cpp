@@ -103,4 +103,11 @@ namespace abstractgl
         startup(window, window_data, err, major, minor);
         return window;
     }
+
+    void enable_blend()
+    {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 }
