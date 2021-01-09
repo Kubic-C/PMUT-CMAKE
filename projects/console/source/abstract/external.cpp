@@ -141,14 +141,14 @@ namespace abstractgl
                 atlas_height = std::max(atlas_height, (int)face->glyph->bitmap.rows);
             }
 
-            // this will go ahead and allocate some space on VRAM/GPU RAM, keep in mind this texture is ho
+            // this will go ahead and allocate some space on VRAM/GPU RAM, keep in mind this texture holds no data currently
             font_atlas.allocate(
                 GL_UNSIGNED_BYTE,
                 GL_RED,
                 GL_RED,
                 atlas_width,
                 atlas_height,
-                nullptr
+                nullptr // notice that were just allocating space here, not filling data 
             );
             font_atlas.bind();
             set_default_bitmap_tex_args();
@@ -162,6 +162,7 @@ namespace abstractgl
                 if(abstractgl::ft::load_char(face, c))
                     continue;
 
+                // paste the buffer into the font atlas
                 font_atlas.load_data(
                     GL_UNSIGNED_BYTE,
                     x,
@@ -172,8 +173,9 @@ namespace abstractgl
                     face->glyph->bitmap.buffer
                 );
 
-                // should be equivelent to
-                // glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+                /* --- save the glyph data to a list --- */
+
+                // save this data to be used when printing
                 char_set[c].advance = face->glyph->advance.x >> 6; // how far the cursor should move to clear character(stop characters from clipping)
                 char_set[c].size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
                 char_set[c].bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
@@ -182,10 +184,10 @@ namespace abstractgl
                 // we divide it by the width to normalize, since tex coords can only between 0.0, and 1.0
                 float tx = (float)x / atlas_width; 
 
-                char_set[c].tex_coords.resize(12);
                 float tc_width = (float)char_set[c].size.x / atlas_width;
-                float tc_height = (float)char_set[c].size.y / atlas_height;
-                char_set[c].tex_coords =
+                float tc_height = (float)char_set[c].size.y / atlas_height; 
+                char_set[c].tex_coords.resize(12); // resize the glyph to hold the initialization list
+                char_set[c].tex_coords = // these are four vertexes(vec2) becuase were are using indicies
                 {
                     tx + tc_width , 0,
                     tx            , 0,
@@ -193,9 +195,11 @@ namespace abstractgl
                     tx            , tc_height,
                 };
 
+                // this is required to prevent glyphs from just pasting on top of one another
                 x += face->glyph->bitmap.width;
             }
 
+            // generate mip maps for some efficiency
             font_atlas.bind();
             glGenerateMipmap(GL_TEXTURE_2D);
             font_atlas.unbind();
