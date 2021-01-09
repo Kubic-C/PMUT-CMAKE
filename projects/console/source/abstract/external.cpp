@@ -182,14 +182,10 @@ namespace abstractgl
                 float tc_height = (float)char_set[c].size.y / atlas_height;
                 char_set[c].tex_coords =
                 {
-                    tx + tc_width, 0,
-                    tx           , 0,
-                    tx + tc_width, tc_height,
-
-                    tx           , tc_height,
-                    tx + tc_width, tc_height,
-                    tx           , 0
- 
+                    tx + tc_width , 0,
+                    tx            , 0,
+                    tx + tc_width , tc_height, 
+                    tx            , tc_height,
                 };
 
                 x += face->glyph->bitmap.width;
@@ -198,6 +194,8 @@ namespace abstractgl
             font_atlas.bind();
             glGenerateMipmap(GL_TEXTURE_2D);
             font_atlas.unbind();
+
+            highest_glpyh_size = atlas_height;
 
             abstractgl::unbind_texture();
         }

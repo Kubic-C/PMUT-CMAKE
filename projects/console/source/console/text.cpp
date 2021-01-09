@@ -25,14 +25,14 @@
 namespace console
 {
     render_context::render_context()
-        : font_vbo(GL_ARRAY_BUFFER)
+        : font_vbo(GL_ARRAY_BUFFER), font_indi(GL_ELEMENT_ARRAY_BUFFER)
     {
         // although the amount of space I am allocating on the VRAM seems absurd,
         // it in total is ~2.88 megabytes, and all modern GPUs can handle that
 
 
         // 6 triangles, vec2 position, vec2 tex_coords, vec3 rgb
-        size_t size_of_vbo = (sizeof(float)*6*2*2*3)*CHARACTER_RENDER_LIMIT;
+        size_t size_of_vbo = (sizeof(float)*4*2*2*3)*CHARACTER_RENDER_LIMIT;
         font_vbo.buffer_data(size_of_vbo, nullptr, GL_DYNAMIC_DRAW);
         font_vbo.bind();
         int stride = sizeof(float)*(2+2+3);
@@ -42,17 +42,7 @@ namespace console
         font_vao.vertex_attrib_pointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)16); // a_color
         font_vbo.unbind();
 
-        /*
-            {   // vec2       // vec2                               // vec3
-                x2    , -y2    , ch.xtex_coords[0], ch.ytex_coords[0], color.r, color.g, color.b,
-                x2 + w, -y2    , ch.xtex_coords[1], ch.ytex_coords[1], color.r, color.g, color.b,
-                x2    , -y2 - h, ch.xtex_coords[2], ch.ytex_coords[2], color.r, color.g, color.b,
-
-                x2 + w, -y2    , ch.xtex_coords[3], ch.ytex_coords[3], color.r, color.g, color.b,
-                x2    , -y2 - h, ch.xtex_coords[4], ch.ytex_coords[4], color.r, color.g, color.b,
-                x2 + w, -y2 - h, ch.xtex_coords[5], ch.ytex_coords[5], color.r, color.g, color.b,
-            };
-        */
+        generate_indexes();
     }
 
     void render_context::use_program(abstractgl::program new_font_program)
@@ -65,9 +55,8 @@ namespace console
         text_font = new_text_font;
     }
 
-    std::vector<float> render_context::parse_output(glm::vec2 pos, glm::vec3 color, float scale, std::string text)
+    void render_context::parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text)
     {
-        std::vector<float> quads;
         for(auto c : text)
         {
             abstractgl::ft::character& ch = text_font.char_set[c];
@@ -78,37 +67,100 @@ namespace console
             float h = ch.size.y * scale;    
 
             float x_width = x2 + w, y_height = y2 + h;
-            std::vector<float> tquad = 
+            std::vector<float> tquad = // this will calculate the final vertex for the character
             {   // vec2       // vec2                               // vec3
-                x_width, y_height, ch.tex_coords[0], ch.tex_coords[1], color.r, color.g, color.b,
-                x2     , y_height, ch.tex_coords[2], ch.tex_coords[3], color.r, color.g, color.b,
-                x_width, y2     , ch.tex_coords[4], ch.tex_coords[5], color.r, color.g, color.b,
-
-                x2     , y2     , ch.tex_coords[6], ch.tex_coords[7], color.r, color.g, color.b,
-                x_width, y2     , ch.tex_coords[8], ch.tex_coords[9], color.r, color.g, color.b,
-                x2     , y_height, ch.tex_coords[10], ch.tex_coords[11], color.r, color.g, color.b,
+                x_width, y_height      , ch.tex_coords[0], ch.tex_coords[1],   color.r, color.g, color.b,
+                x2     , y_height      , ch.tex_coords[2], ch.tex_coords[3],   color.r, color.g, color.b,
+                x_width, y2            ,  ch.tex_coords[4], ch.tex_coords[5],   color.r, color.g, color.b,
+                x2     , y2            ,  ch.tex_coords[6], ch.tex_coords[7],   color.r, color.g, color.b,
             };
 
-            quads.reserve(tquad.size());
-            quads.insert(quads.end(), tquad.begin(), tquad.end());
+            vector.reserve(tquad.size());
+            vector.insert(vector.end(), tquad.begin(), tquad.end());
 
             pos.x += ch.advance * scale;
         }
-
-        return quads;
     }
 
-    void render_context::print(glm::vec2 pos, glm::vec3 color, float scale, std::string text)
+    void render_context::free_print(std::string text, glm::vec2 pos, glm::vec3 color, float scale)
+    {
+        full_bind();
+
+        std::vector<float> quads;
+        parse_output(quads, pos, color, scale, text);
+        font_vbo.update_buffer(sizeof(float)*quads.size(), &quads[0]);
+        glDrawElements(GL_TRIANGLES, text.size()*6, GL_UNSIGNED_INT, nullptr);
+
+        full_unbind();
+    }
+
+    void render_context::print(std::string text, glm::vec3 color, float scale)
+    {
+        std::vector<float> text_quads;
+        parse_output(text_quads, glm::ivec2(print_x, print_y), color, scale, text);
+        output_buffer.reserve(text_quads.size());
+        output_buffer.insert(output_buffer.end(), text_quads.begin(), text_quads.end());
+        print_y -= text_font.highest_glpyh_size;
+        n_of_char += text.size();
+    }
+
+    void render_context::print_poll()
+    {
+        full_bind();
+
+        font_vbo.update_buffer(sizeof(float)*output_buffer.size(), &output_buffer[0]);
+        glDrawElements(GL_TRIANGLES, n_of_char*6, GL_UNSIGNED_INT, nullptr);
+        output_buffer.clear();
+        print_x = start.x; print_y = start.y; 
+        n_of_char = 0;
+
+        full_unbind();
+    }
+
+    void render_context::full_bind()
     {
         font_vao.bind();
         font_program.use();
         text_font.font_atlas.activate(GL_TEXTURE0);
+        font_indi.bind();
+    }
 
-        std::vector<float> quads = parse_output(pos, color, scale, text);
-        font_vbo.update_buffer(sizeof(float)*quads.size(), &quads[0]);
-        glDrawArrays(GL_TRIANGLES, 0, text.size()*6);
-
+    void render_context::full_unbind()
+    {
         abstractgl::unbind_texture();
+        font_indi.unbind();
         font_vao.unbind();
+    }
+
+    void render_context::set_start(int x, int y)
+    {
+        start.x = x, start.y = y;
+    }
+
+    void render_context::set_projection(glm::fmat4 projection)
+    {
+        font_program.use();
+        glUniformMatrix4fv(glGetUniformLocation(font_program.get_id(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    }
+
+    void render_context::generate_indexes()
+    {
+        std::vector<uint> indices(6*CHARACTER_RENDER_LIMIT);
+        indices.resize(6*CHARACTER_RENDER_LIMIT);
+        unsigned int offset = 0;
+		for (long int i = 0; i < 6*CHARACTER_RENDER_LIMIT; i += 6)
+		{
+			indices[i + 0] = 2 + offset;
+			indices[i + 1] = 3 + offset;
+			indices[i + 2] = 0 + offset;
+
+			indices[i + 3] = 0 + offset;
+			indices[i + 4] = 1 + offset;
+			indices[i + 5] = 3 + offset;
+
+			offset += 4;
+		}
+
+        font_indi.buffer_data(sizeof(uint)*6*CHARACTER_RENDER_LIMIT, &indices[0], GL_STATIC_DRAW);
     }
 }

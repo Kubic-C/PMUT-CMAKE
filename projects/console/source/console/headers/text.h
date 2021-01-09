@@ -68,16 +68,47 @@ namespace console
         // use this to, note: the font already has to have a computed char set. use std::move to prevent creating copies
         void use_font(abstractgl::ft::font&& font);
 
-        // this will not acutally print anything, this will instead add to an output buffer
-        void print(glm::vec2 pos, glm::vec3 color, float scale, std::string text);
+        // free print allows you to print anywhere on the screen
+        // note: overusing this function can result in lower framerate
+        void free_print(std::string text, glm::vec2 pos, glm::vec3 color, float scale);
+
+        // print will print text onto the screen but only on the top left hand side
+        // note: this is alot faster to use and is recommended for faster frametime
+        // note: this will not print any text inside of the function, it will instead be printed when print_poll() is called
+        void print(std::string text, glm::vec3 color, float scale);
+
+        /// draws everything in the output_buffer, then clearing it
+        void print_poll();
 
         // this will parse the output buffer. whist also updating memory in VRAM
-        std::vector<float> parse_output(glm::vec2 pos, glm::vec3 color, float scale, std::string text);
+        void parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text);
+
+        // bind everything needed to print
+        void full_bind();
+
+        // unbind everyting
+        void full_unbind();
+
+        // set start pos
+        void set_start(int x, int y);
+
+        // set projection uniform in vertex shader
+        void set_projection(glm::fmat4 projection);
+
     private:
         abstractgl::program font_program; // this is shader program that will be responsible for rendering text
         abstractgl::ft::font text_font; // this is the font that will be used to render
         abstractgl::vertex_array font_vao; // contains how data should be read
         abstractgl::vertex_buffer font_vbo; // contains raw data
+        abstractgl::vertex_buffer font_indi; // inidces
+        std::vector<float> output_buffer; // used for print
+        int n_of_char = 0; // the amount of characters to be rendered
+        int print_x = 0; // tell where text inside of print poll should get printed
+        int print_y = 0; // tell where text inside of print poll should get printed
+        glm::ivec2 start; // begginning of where print_poll will print
+
+        // generate all indices up to the CHARACTER_LIMIT
+        void generate_indexes();
     };
 }
  

@@ -24,10 +24,18 @@
 #include "HLnetwork/headers/base.h"
 #include <chrono>
 
-void error_callback(int error_code, const char* error_str)
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
 {
-    std::cout << error_code << ": " << error_str << '\n';
+    std::cout << message << '\n';
 }
+
 
 int main()
 {
@@ -35,7 +43,8 @@ int main()
     GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 1000, 1000), gl_str, 4, 0);
     std::cout << gl_str << '\n';
 
-    glfwSetErrorCallback(error_callback);
+    //glEnable(GL_DEBUG_OUTPUT);
+    //glDebugMessageCallback( MessageCallback, 0 );
 
     abstractgl::enable_blend();
 
@@ -74,6 +83,11 @@ int main()
     render.use_font(std::move(font));
     render.use_program(font_program);
 
+    int x, y;
+    glfwGetWindowSize(window, &x, &y);
+    render.set_start(0, 900);
+    render.set_projection(glm::ortho(0.0f, static_cast<float>(x), 0.0f, static_cast<float>(y)));
+
     glClearColor(0.0, 0.0, 0.4, 1.0);
     while (!glfwWindowShouldClose(window))
     {
@@ -82,8 +96,9 @@ int main()
 
         auto start = std::chrono::high_resolution_clock::now();
 
-        render.print(glm::vec2(0, 900), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f, std::string(__DATE__));
-
+        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print_poll();
+        
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end - start;
         using namespace std::chrono_literals;

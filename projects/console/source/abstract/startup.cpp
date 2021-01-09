@@ -90,10 +90,6 @@ namespace abstractgl
             err = GLEW_FAILED;
             return;
         }
-
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     // starts up glfw, creates a window, and then starts up glew
@@ -106,7 +102,6 @@ namespace abstractgl
 
     void enable_blend()
     {
-        glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }

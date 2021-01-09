@@ -50,7 +50,7 @@ namespace abstractgl
 
         struct character 
         {
-            std::vector<float> tex_coords; // texture coords of the character on the font atlas
+            std::vector<float> tex_coords; // texture coords of the character on the font atlas, use indicies
             glm::ivec2   size;      // Size of glyph
             glm::ivec2   bearing;   // Offset from baseline to left/top of glyph
             unsigned int advance;   // Horizontal offset to advance to next glyph
@@ -105,6 +105,7 @@ namespace abstractgl
         public:
             std::map<char, character> char_set; // all characters
             texture font_atlas; // all textures
+            int highest_glpyh_size = 0; // height of the highest glyph 
             FT_Face face; // FT_Face the font
         };
     }
