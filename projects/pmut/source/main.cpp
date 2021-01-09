@@ -40,7 +40,7 @@ MessageCallback( GLenum source,
 int main()
 {
     std::string gl_str; 
-    GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 1000, 1000), gl_str, 4, 0);
+    GLFWwindow* window = abstractgl::startup(abstractgl::window_data("hello world", 1000, 1000), gl_str, 4, 6);
     std::cout << gl_str << '\n';
 
     //glEnable(GL_DEBUG_OUTPUT);
@@ -51,28 +51,21 @@ int main()
     // start the ft library, extract the font and then pass it to the render context
     abstractgl::ft::lib_ft freetype;
     freetype.start();
-    abstractgl::ft::font font;
-    if(!font.load_font(freetype, "./misc/fonts/ye.0tf"))
-        return 1;
 
+    abstractgl::ft::font font;
+    if(!font.load_font(freetype, "./misc/fonts/ye.ttf"))
+        return 1;
     
     font.compute_font(gl_str);
-    std::cout << gl_str << '\n';
+    std::cout << gl_str;
+
     font.end();
     freetype.end();
 
     // build an compile the shader program
-    abstractgl::shader vertex(GL_VERTEX_SHADER);
-    vertex.set_shader_src_from_file("./misc/shaders/font.glsl", "vertex");
-    abstractgl::shader fragment(GL_FRAGMENT_SHADER);
-    fragment.set_shader_src_from_file("./misc/shaders/font.glsl", "fragment");
-    std::string ferror, verror, perror;
-    verror = vertex.compile();
-    ferror = fragment.compile();
-    abstractgl::program font_program(perror, vertex, fragment);
-    std::cout << ferror << '\n' << verror << '\n' << perror << '\n';
-    if(ferror.find("succecced") == std::string::npos)
-        return 2;
+    abstractgl::program font_program = 
+            abstractgl::compile_shaders("./misc/shaders/font.glsl", "vertex", "fragment");
+
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(1000), 0.0f, static_cast<float>(1000));
     font_program.use();
@@ -85,7 +78,7 @@ int main()
 
     int x, y;
     glfwGetWindowSize(window, &x, &y);
-    render.set_start(0, 900);
+    render.set_start(10, 1000);
     render.set_projection(glm::ortho(0.0f, static_cast<float>(x), 0.0f, static_cast<float>(y)));
 
 
@@ -96,18 +89,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT); 
 
         render.full_bind();
-        render.print(std::string("hello world, this is PMUT!"), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
-        render.print(std::string(__DATE__), glm::vec3(1.0f, 0.5f, 0.5f), 1.0f);
+        render.print(std::string((const char*)glGetString(GL_VERSION)), glm::vec3(sin(glfwGetTime()), 0.5f, 0.5f), 1.0f);
+        render.print("[ENGINE] -- test ---", glm::vec3(sin(glfwGetTime()), 0.5f, 0.5f), 1.0f);
         render.print_poll();
         render.full_unbind();
 

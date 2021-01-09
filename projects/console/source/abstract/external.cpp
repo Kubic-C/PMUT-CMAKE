@@ -101,7 +101,7 @@ namespace abstractgl
 
         bool font::load_font(lib_ft& lib_ft, std::string dir)
         {
-            if (abstractgl::ft::new_face(lib_ft.lib, dir, glm::ivec2(0, 48), &face))
+            if (abstractgl::ft::new_face(lib_ft.lib, dir, glm::ivec2(0, 30), &face))
             {
                 std::cout << "failed to load face from dir: \n" << dir << '\n'; 
                 return false;
@@ -112,8 +112,10 @@ namespace abstractgl
 
         void font::compute_font(std::string& failed_char)
         {
-            // since this function gets slightly compilacted
-            // it will be heavily commented
+            // goal of this function is to create a font atlas that looks like this
+            // | bitmap | bitmap | bitmap | ...
+            // and create a map of std::pair<char, character> the second holding data of
+            // where the character is in the font atlas
 
             // disable byte-alignment restriction
             abstractgl::set_byte_restriction(1);
@@ -125,13 +127,16 @@ namespace abstractgl
             // load first 128 characters of ASCII set
             for (unsigned char c = 0; c < 128; c++)
             {
-                // Load character glyph 
+                // load character glyph 
                 if (abstractgl::ft::load_char(face, c))
                 {
                     failed_char.append(FT_GLYPH_ERROR + c);
                     continue;
                 }
                 
+                // measure the width and the height of every character to dictate the size
+                // of the font atlas, but only take the hight of the highest glypgh to
+                // fill in the data for atlas_height
                 atlas_width += face->glyph->bitmap.width;
                 atlas_height = std::max(atlas_height, (int)face->glyph->bitmap.rows);
             }

@@ -136,4 +136,23 @@ namespace abstractgl
     {
         glDeleteProgram(id);
     }
+
+    program compile_shaders(std::string dir, std::string vert_name, std::string frag_name)
+    {
+        shader vertex(GL_VERTEX_SHADER);
+        vertex.set_shader_src_from_file(dir, vert_name);
+        std::string verror = vertex.compile();
+
+        shader fragment(GL_FRAGMENT_SHADER);
+        fragment.set_shader_src_from_file(dir, frag_name);
+        std::string ferror = fragment.compile();
+
+        std::string perror;
+        program program_(perror, vertex, fragment);
+        std::cout << "program:\n"  << perror 
+                  << "\nvertex:\n"   << verror 
+                  << "\nfragment:\n" << ferror << '\n';
+                  
+        return program_;
+    }
 }

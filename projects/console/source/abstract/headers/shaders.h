@@ -98,7 +98,8 @@ namespace abstractgl
         unsigned int id;
     };
 
-
+    // compile both vertex and fragment
+    program compile_shaders(std::string dir, std::string vert_name, std::string frag_name);
 }
 
 #endif

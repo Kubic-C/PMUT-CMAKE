@@ -36,7 +36,6 @@ namespace console
         font_vbo.buffer_data(size_of_vbo, nullptr, GL_DYNAMIC_DRAW);
         font_vbo.bind();
         int stride = sizeof(float)*(2+2+3);
-        std::cout << stride << '\n';
         font_vao.vertex_attrib_pointer(0, 2, GL_FLOAT, GL_FALSE, stride, (void*)0); // a_pos
         font_vao.vertex_attrib_pointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)8); // a_tex_coords
         font_vao.vertex_attrib_pointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)16); // a_color
@@ -57,28 +56,32 @@ namespace console
 
     void render_context::parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text)
     {
+        // save the position of x, so if there is a newline character x = pos.x
+        float x = pos.x;
         for(auto c : text)
         {
+            switch(c) { case '\n': x = pos.x; pos.y -= text_font.highest_glpyh_size; continue; }
+
             abstractgl::ft::character& ch = text_font.char_set[c];
 
-            float x2 = pos.x + ch.bearing.x * scale;
+            float x2 = x + ch.bearing.x * scale;
             float y2 = pos.y - (ch.size.y - ch.bearing.y) * scale;
             float w = ch.size.x * scale;
             float h = ch.size.y * scale;    
 
             float x_width = x2 + w, y_height = y2 + h;
             std::vector<float> tquad = // this will calculate the final vertex for the character
-            {   // vec2       // vec2                               // vec3
-                x_width, y_height      , ch.tex_coords[0], ch.tex_coords[1],   color.r, color.g, color.b,
-                x2     , y_height      , ch.tex_coords[2], ch.tex_coords[3],   color.r, color.g, color.b,
-                x_width, y2            ,  ch.tex_coords[4], ch.tex_coords[5],   color.r, color.g, color.b,
-                x2     , y2            ,  ch.tex_coords[6], ch.tex_coords[7],   color.r, color.g, color.b,
+            {   // vec2 - pos       // vec2 - tex coords                // vec3 - color
+                x_width, y_height,  ch.tex_coords[0], ch.tex_coords[1], color.r, color.g, color.b,
+                x2     , y_height,  ch.tex_coords[2], ch.tex_coords[3], color.r, color.g, color.b,
+                x_width, y2      ,  ch.tex_coords[4], ch.tex_coords[5], color.r, color.g, color.b,
+                x2     , y2      ,  ch.tex_coords[6], ch.tex_coords[7], color.r, color.g, color.b,
             };
 
             vector.reserve(tquad.size());
             vector.insert(vector.end(), tquad.begin(), tquad.end());
 
-            pos.x += ch.advance * scale;
+            x += ch.advance * scale;
         }
     }
 
@@ -126,7 +129,7 @@ namespace console
 
     void render_context::set_start(int x, int y)
     {
-        start.x = x, start.y = y;
+        start.x = x, start.y = y - text_font.highest_glpyh_size;
     }
 
     void render_context::set_projection(glm::fmat4 projection)
@@ -145,11 +148,9 @@ namespace console
 			indices[i + 0] = 2 + offset;
 			indices[i + 1] = 3 + offset;
 			indices[i + 2] = 0 + offset;
-
 			indices[i + 3] = 0 + offset;
 			indices[i + 4] = 1 + offset;
 			indices[i + 5] = 3 + offset;
-
 			offset += 4;
 		}
 
