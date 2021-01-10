@@ -195,6 +195,8 @@ namespace abstractgl
                     tx            , tc_height,
                 };
 
+                char_set[c].bearingy_minus_sizey = char_set[c].size.y - char_set[c].bearing.y;
+
                 // this is required to prevent glyphs from just pasting on top of one another
                 x += face->glyph->bitmap.width;
             }

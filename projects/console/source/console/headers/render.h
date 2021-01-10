@@ -30,7 +30,7 @@
 #include "base.h"
 
 // I chose 10000 becuase, lets be real here 10000 characters is never going to 
-// be on the screen at once, and all modern GPU(2010 and after, in terms of VRAM) are going to
+// be on the screen at once(at least not intentionally), and all modern GPU(2010 and after, in terms of VRAM) are going to
 // be able handle it.
 #define CHARACTER_RENDER_LIMIT 10000
 
@@ -48,7 +48,8 @@ namespace console
     struct meta_str
     {
         modifier str_modifier = modifier::non_static_mod; // string modifier
-        std::string str = "";        // string
+        std::string str = "";           // string
+        bool nextline = true;          //
         glm::vec3 rgb;                // rgb
         int rp = 0;                  // render piority
     };
@@ -75,6 +76,7 @@ namespace console
     {
     public:
         render_context();
+        ~render_context();
 
     public: // methods
         // use this to asign a shader program
@@ -119,7 +121,7 @@ namespace console
         abstractgl::vertex_array font_vao; // contains how data should be read
         abstractgl::vertex_buffer font_vbo; // contains raw data
         abstractgl::vertex_buffer font_indi; // inidces
-        std::vector<float> output_buffer; // used for print
+        std::vector<float>* output_buffer; // used for print
         int n_of_char = 0; // the amount of characters to be rendered
         int print_x = 0; // tell where text inside of print poll should get printed
         int print_y = 0; // tell where text inside of print poll should get printed

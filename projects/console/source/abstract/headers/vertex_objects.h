@@ -73,6 +73,9 @@ namespace abstractgl
         // this will generate a new buffer
         void gen(unsigned int type);
 
+        // delete the buffer
+        void delete_b();
+
     private:
         unsigned int id; // the vbo's id given by opengl
         unsigned int type; // the type of data stored in the buffer
@@ -110,6 +113,9 @@ namespace abstractgl
         // can be called anywhere and will unbind whatever
         // vao is bound wehther or not you call this method
         void unbind();
+
+        // delete the buffer
+        void delete_a();
 
    private:
         unsigned int id; // the vao's id given by opengl

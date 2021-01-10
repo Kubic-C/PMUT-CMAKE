@@ -54,6 +54,11 @@ namespace console
         current_manager = this;
     }
 
+    manager::~manager()
+    {
+        glfwTerminate();
+    }
+
     void manager::copy_last_input_to_active_buffer()
     {
         active_input = last_input[last_input_index];
@@ -78,9 +83,9 @@ namespace console
                  &remove_if_non_static), meta_str_buffer.end());
     }
 
-    void manager::print(std::string text, modifier modifier_, int rp, float r, float b, float g)
+    void manager::print(std::string text, modifier modifier_, int rp, float r, float b, float g, bool nextline)
     {
-        meta_str_buffer.push_back((meta_str){modifier_, text, glm::ivec3(r, g, b), rp});
+        meta_str_buffer.push_back((meta_str){modifier_, text, nextline, glm::ivec3(r, g, b), rp});
     }
 
     void manager::free_print(std::string text, float r, float b, float g, float x, float y)
@@ -126,11 +131,26 @@ namespace console
 
     void manager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
+        static short int last_key;
         switch(key)
         {
             case GLFW_KEY_F1: // clear static strings
-                current_manager->clear_output_buffer();
+                if(action == GLFW_PRESS)
+                    current_manager->clear_output_buffer();
                 break;
+
+            case GLFW_KEY_V: // get the clipboard
+                if(last_key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT))
+                {
+                    current_manager->active_input.append(glfwGetClipboardString(window));
+                }
+                return;
+
+            case GLFW_KEY_C: // set the clipboard
+                if(last_key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT))
+                    glfwSetClipboardString(window, 
+                            current_manager->active_input.c_str());
+                return;
 
             case GLFW_KEY_ENTER: // submit input
                 if(current_manager->active_input.find_first_not_of(' ') 
@@ -155,7 +175,6 @@ namespace console
 
                         current_manager->copy_last_input_to_active_buffer();
                     }
-
                 break;
 
             case GLFW_KEY_UP: // cycle through last inputs
@@ -176,6 +195,8 @@ namespace console
             default:
                 break;
         }
+        
+        last_key = key;
     }
 
     void manager::character_callback(GLFWwindow* window, unsigned int codepoint)

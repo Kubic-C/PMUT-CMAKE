@@ -20,7 +20,7 @@
 
 */
 
-#include "console/headers/manager.h"
+#include "console/headers/include.h"
 #include "HLnetwork/headers/base.h"
 #include <chrono>
 
@@ -65,21 +65,25 @@ int main()
     glClearColor(0.0, 0.0, 0.4, 1.0);
     while (!glfwWindowShouldClose(console_test.window))
     {
+
+        auto start = std::chrono::high_resolution_clock::now();
+        console_test.print("[PMUT]", console::modifier::non_static_mod, 2, 0.5f, 1.0f, 0.1f, false);
+        console_test.print(console_test.active_input, console::modifier::non_static_mod, 2, 1.0f, 0.0f, 1.0f);
+
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 
 
-        auto start = std::chrono::high_resolution_clock::now();
-        console_test.print("[PMUT]" + console_test.active_input, console::modifier::non_static_mod, 0, 1.0f, 1.0f, 1.0f);
         console_test.poll();
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> duration = end - start;
-        console_test.print("[PMUT] frametime: " + std::to_string(duration.count()*1000), console::modifier::non_static_mod, 1, 1.0f, 0.6f, 0.6f);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(console_test.window);
 
         /* Poll for and process events */
         glfwPollEvents();
+
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        console_test.print("[PMUT] frametime: " + std::to_string(duration.count()*1000) + "ms", console::modifier::non_static_mod, 3, 1.0f, 0.6f, 0.6f);
     }
 
     return 0;

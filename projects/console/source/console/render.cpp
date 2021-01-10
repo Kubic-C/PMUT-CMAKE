@@ -25,7 +25,7 @@
 namespace console
 {
     render_context::render_context()
-        : font_vbo(GL_ARRAY_BUFFER), font_indi(GL_ELEMENT_ARRAY_BUFFER)
+        : font_vbo(GL_ARRAY_BUFFER), font_indi(GL_ELEMENT_ARRAY_BUFFER), output_buffer(new std::vector<float>)
     {
         // although the amount of space I am allocating on the VRAM seems absurd,
         // it in total is ~2.88 megabytes, and all modern GPUs can handle that
@@ -42,6 +42,14 @@ namespace console
         font_vbo.unbind();
 
         generate_indexes();
+    }
+
+    render_context::~render_context()
+    {
+        font_indi.delete_b();
+        font_vbo.delete_b();
+        font_vao.delete_a();
+        delete output_buffer;
     }
 
     void render_context::use_program(abstractgl::program new_font_program)
@@ -65,7 +73,7 @@ namespace console
             abstractgl::ft::character& ch = text_font->char_set[c];
 
             float x2 = x + ch.bearing.x * scale;
-            float y2 = pos.y - (ch.size.y - ch.bearing.y) * scale;
+            float y2 = pos.y - ch.bearingy_minus_sizey * scale;
             float w = ch.size.x * scale;
             float h = ch.size.y * scale;    
 
@@ -98,7 +106,7 @@ namespace console
                 abstractgl::ft::character& ch = text_font->char_set[c];
 
                 float x2 = x + ch.bearing.x;
-                float y2 =y - (ch.size.y - ch.bearing.y);
+                float y2 = y - ch.bearingy_minus_sizey;
                 float w = ch.size.x;
                 float h = ch.size.y;    
 
@@ -111,14 +119,22 @@ namespace console
                     x2     , y2      ,  ch.tex_coords[6], ch.tex_coords[7], mstr.rgb.r, mstr.rgb.g, mstr.rgb.b,
                 };
 
-                output_buffer.reserve(tquad.size());
-                output_buffer.insert(output_buffer.end(), tquad.begin(), tquad.end());
+                output_buffer->reserve(tquad.size());
+                output_buffer->insert(output_buffer->end(), tquad.begin(), tquad.end());
                 n_of_char++;
 
                 x += ch.advance;
             }
-            y -= text_font->highest_glpyh_size;
-            x = print_x;
+            switch(mstr.nextline)
+            {
+                case false:
+                    continue;
+
+                case true:
+                    y -= text_font->highest_glpyh_size;
+                    x = print_x;
+                    break;
+            }
         }
     }
 
@@ -134,17 +150,17 @@ namespace console
     {
         std::vector<float> text_quads;
         parse_output(text_quads, glm::ivec2(print_x, print_y), color, scale, text);
-        output_buffer.reserve(text_quads.size());
-        output_buffer.insert(output_buffer.end(), text_quads.begin(), text_quads.end());
+        output_buffer->reserve(text_quads.size());
+        output_buffer->insert(output_buffer->end(), text_quads.begin(), text_quads.end());
         print_y -= text_font->highest_glpyh_size;
         n_of_char += text.size();
     }
 
     void render_context::print_poll()
     {
-        font_vbo.update_buffer(sizeof(float)*output_buffer.size(), &output_buffer[0]);
+        font_vbo.update_buffer(sizeof(float)*output_buffer->size(), &(*output_buffer)[0]);
         glDrawElements(GL_TRIANGLES, n_of_char*6, GL_UNSIGNED_INT, nullptr);
-        output_buffer.clear();
+        output_buffer->clear();
         print_x = start.x; print_y = start.y; 
         n_of_char = 0;
     }

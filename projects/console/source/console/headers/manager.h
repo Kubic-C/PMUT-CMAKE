@@ -76,6 +76,7 @@ namespace console
     {
     public:
         manager(std::string name, int width, int height, bool& good);
+        ~manager();
 
     public: // input - methods
         void copy_last_input_to_active_buffer();        
@@ -85,7 +86,7 @@ namespace console
         void poll();
 
         // add to string buffer
-        void print(std::string text, modifier modifier_, int rp, float r, float b, float g);
+        void print(std::string text, modifier modifier_, int rp, float r, float b, float g, bool nextline = true);
 
         // print freely wherever on the string
         void free_print(std::string text, float r, float b, float g, float x, float y);

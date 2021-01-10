@@ -78,6 +78,11 @@ namespace abstractgl
         glGenBuffers(1, &id);
     }
 
+    void vertex_buffer::delete_b()
+    {
+        glDeleteBuffers(1, &id);
+    }
+
     // vertex array definitions
     void vertex_array::vertex_attrib_pointer(
         unsigned int index,
@@ -110,8 +115,13 @@ namespace abstractgl
         glBindVertexArray(id);
     }   
 
-     void vertex_array::unbind()
+    void vertex_array::unbind()
     {
         glBindVertexArray(0);
     }   
+
+    void vertex_array::delete_a()
+    {
+        glDeleteVertexArrays(1, &id);
+    }
 }
