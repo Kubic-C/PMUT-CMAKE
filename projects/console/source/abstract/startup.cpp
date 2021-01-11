@@ -95,7 +95,7 @@ namespace abstractgl
     // starts up glfw, creates a window, and then starts up glew
     GLFWwindow* startup(window_data window_data, std::string& err, int major, int minor)
     {
-        GLFWwindow* window;
+        GLFWwindow* window = nullptr;
         startup(window, window_data, err, major, minor);
         return window;
     }

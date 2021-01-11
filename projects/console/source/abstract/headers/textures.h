@@ -20,8 +20,8 @@
 
 */
 
-#ifndef TEXTURES_H
-#define TEXTURES_H
+#ifndef ABSTRACT_TEXTURES_H
+#define ABSTRACT_TEXTURES_H
 
 #include "shaders.h"
 
@@ -42,9 +42,11 @@ namespace abstractgl
     // this will activate a texture slot, remember that use GL_TEXTURE, not a 1, 0, or 2 for example.
     void activate_texture(unsigned int slot);
 
-    /*
+    /* 
         textures in opengl make it possible to take images
         and apply them to shapes in a window.
+
+        texture class uses GL_TEXTURE_2D...
     */
     class texture
     {
@@ -62,11 +64,11 @@ namespace abstractgl
         // unbind the texture
         void unbind();
 
-        // glTexImage
+        // glTexImage, allocates some space on the VRAM for textures
         void allocate(
-            unsigned int type,
-            unsigned int internal_format, 
-            unsigned int format,
+            uint32_t type,
+            uint32_t internal_format, 
+            uint32_t format,
             int width, 
             int height,
             void* pixels
@@ -74,10 +76,10 @@ namespace abstractgl
 
         // glTexSubImage, space HAS to be already allocated for this to work
         void load_data(
-            unsigned int type,
-            unsigned int xoffset, 
-            unsigned int yoffset, 
-            unsigned int format,
+            uint32_t type,
+            uint32_t xoffset, 
+            uint32_t yoffset, 
+            uint32_t format,
             int width, 
             int height,
             void* pixels
@@ -92,10 +94,10 @@ namespace abstractgl
         image get_image();
 
         // this will activate the texture into a slot
-        void activate(unsigned int slot);
+        void activate(uint32_t slot);
 
     private:
-        unsigned int id;
+        uint32_t id;
         image image_texture;
     };
 
@@ -105,8 +107,8 @@ namespace abstractgl
     // this will fill the args for bitmaps
     void set_default_bitmap_tex_args();
 
-    // this will make stbi flip images on load, calling this once will flip images on load, calling this again will stop that.
-    void set_flip_images_on_load();
+    // this will make stbi flip images on load
+    void set_flip_images_on_load(bool set_flag);
 }
 
-#endif //TEXTURES_H
+#endif // ABSTRACT_TEXTURES_H

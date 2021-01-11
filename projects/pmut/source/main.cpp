@@ -22,10 +22,11 @@
 
 #include "console/headers/include.h"
 #include "HLnetwork/headers/base.h"
-#include <chrono>
 
 int main()
 {
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
+
     bool is_good = false;
     console::manager console_test("manager test", 1000, 1000, is_good);
     if(!is_good)
@@ -37,13 +38,16 @@ int main()
     abstractgl::ft::lib_ft freetype;
     freetype.start();
 
-    std::string gl_str;
     abstractgl::ft::font font;
-    if(!font.load_font(freetype, "./misc/fonts/ye.ttf"))
-        return 1;
-    
-    font.compute_font(gl_str);
-    std::cout << gl_str;
+    if(!font.load_font(freetype, 0, 30, "./misc/fonts/__font.ttf"))
+    {
+        font.end();
+        freetype.end();
+        return -1;
+    }
+
+    std::string failed_glpyhs = font.compute_font();
+    std::cout << failed_glpyhs << '\n';
 
     font.end();
     freetype.end();
@@ -59,31 +63,30 @@ int main()
     console_test.use_render_context(render);
     console_test.set_all_callbacks();
 
-    console_test.print((char*)glGetString(GL_VERSION), console::modifier::perma_mod, 2, 1.0f, 1.0f, 0.0f);
+    console_test.print((char*)glGetString(GL_VERSION), console::modifier::perma_mod, 2, COLOR_YELLOW_3P);
 
+    glfwSwapInterval(1);
 
-    glClearColor(0.0, 0.0, 0.4, 1.0);
+    console::timer ft_timer;
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     while (!glfwWindowShouldClose(console_test.window))
     {
+        ft_timer.start();
 
-        auto start = std::chrono::high_resolution_clock::now();
-        console_test.print("[PMUT]", console::modifier::non_static_mod, 2, 0.5f, 1.0f, 0.1f, false);
-        console_test.print(console_test.active_input, console::modifier::non_static_mod, 2, 1.0f, 0.0f, 1.0f);
+        console_test.print(PROMPTING_USER, console::modifier::non_static_mod, 2, 0.5f, 1.0f, 0.1f, false);
+        console_test.print(console_test.active_input + '~', console::modifier::non_static_mod, 2, 1.0, 1.0f, 1.0f);
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 
 
         console_test.poll();
 
-        /* Swap front and back buffers */
         glfwSwapBuffers(console_test.window);
 
-        /* Poll for and process events */
+        /* process events, if any */
         glfwPollEvents();
 
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start;
-        console_test.print("[PMUT] frametime: " + std::to_string(duration.count()*1000) + "ms", console::modifier::non_static_mod, 3, 1.0f, 0.6f, 0.6f);
+        ft_timer.end();
     }
 
     return 0;

@@ -26,7 +26,7 @@ namespace abstractgl
 {
     // shader method definitions
     shader::shader(unsigned int type)
-        : type(type), id(glCreateShader(type))
+        : id(glCreateShader(type)), type(type)
     {
     }
 

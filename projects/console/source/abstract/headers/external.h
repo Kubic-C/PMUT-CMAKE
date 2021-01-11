@@ -27,8 +27,8 @@
     much
 */
 
-#ifndef ABSTRACT_MATH_H
-#define ABSTRACT_MATH_H
+#ifndef ABSTRACT_EXTERNAL_H
+#define ABSTRACT_EXTERNAL_H
 
 #include "startup.h"
 
@@ -54,7 +54,7 @@ namespace abstractgl
             float bearingy_minus_sizey;
             glm::ivec2   size;      // Size of glyph
             glm::ivec2   bearing;   // Offset from baseline to left/top of glyph
-            unsigned int advance;   // Horizontal offset to advance to next glyph
+            uint32_t advance;   // Horizontal offset to advance to next glyph
         };
 
         // starts up the freetype library
@@ -95,10 +95,10 @@ namespace abstractgl
 
         public: // methods ---
             // load a .tff or .bff file, true for good, false for bad
-            bool load_font(lib_ft& lib, std::string dir);
+            bool load_font(lib_ft& lib_ft, int f_width, int f_height, std::string dir);
 
             // compute the indivual characters
-            void compute_font(std::string& failed_char);
+            std::string compute_font();
 
             // cleanup the font
             void end();
@@ -107,9 +107,10 @@ namespace abstractgl
             std::map<char, character> char_set; // all characters
             texture font_atlas; // all textures
             int highest_glpyh_size = 0; // height of the highest glyph 
+            int widest_glyph_size = 0; // widest glyph size
             FT_Face face; // FT_Face the font
         };
     }
 }
 
-#endif // ABSTRACT_MATH_H
+#endif // ABSTRACT_EXTERNAL_H

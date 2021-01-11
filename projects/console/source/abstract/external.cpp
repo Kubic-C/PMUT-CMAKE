@@ -99,9 +99,9 @@ namespace abstractgl
                 end();
         }
 
-        bool font::load_font(lib_ft& lib_ft, std::string dir)
+        bool font::load_font(lib_ft& lib_ft, int f_width, int f_height, std::string dir)
         {
-            if (abstractgl::ft::new_face(lib_ft.lib, dir, glm::ivec2(0, 30), &face))
+            if (abstractgl::ft::new_face(lib_ft.lib, dir, glm::ivec2(f_width, f_height), &face))
             {
                 std::cout << "failed to load face from dir: \n" << dir << '\n'; 
                 return false;
@@ -110,12 +110,15 @@ namespace abstractgl
             return true;
         }
 
-        void font::compute_font(std::string& failed_char)
+        std::string font::compute_font()
         {
             // goal of this function is to create a font atlas that looks like this
             // | bitmap | bitmap | bitmap | ...
             // and create a map of std::pair<char, character> the second holding data of
             // where the character is in the font atlas
+
+            // this will be the final return value, telling what glyphs have failed
+            std::string failed_glyphs = "";
 
             // disable byte-alignment restriction
             abstractgl::set_byte_restriction(1);
@@ -125,20 +128,19 @@ namespace abstractgl
             int atlas_height = 0;
 
             // load first 128 characters of ASCII set
-            for (unsigned char c = 0; c < 128; c++)
+            for (int c = 0; c < 256; c++)
             {
                 // load character glyph 
                 if (abstractgl::ft::load_char(face, c))
                 {
-                    failed_char.append(FT_GLYPH_ERROR + c);
+                    failed_glyphs.append(FT_GLYPH_ERROR + (char)c);
+                    failed_glyphs += '\n';
                     continue;
-                }
+                } 
                 
-                // measure the width and the height of every character to dictate the size
-                // of the font atlas, but only take the hight of the highest glypgh to
-                // fill in the data for atlas_height
                 atlas_width += face->glyph->bitmap.width;
                 atlas_height = std::max(atlas_height, (int)face->glyph->bitmap.rows);
+                widest_glyph_size = std::max(widest_glyph_size, (int)face->glyph->bitmap.width);
             }
 
             // this will go ahead and allocate some space on VRAM/GPU RAM, keep in mind this texture holds no data currently
@@ -157,7 +159,7 @@ namespace abstractgl
             int x = 0;
 
             // paste the glyph data on to the font atlas
-            for(unsigned char c = 0; c < 128; c++)
+            for(int c = 0; c < 256; c++)
             {
                 if(abstractgl::ft::load_char(face, c))
                     continue;
@@ -183,9 +185,9 @@ namespace abstractgl
 
                 // we divide it by the width to normalize, since tex coords can only between 0.0, and 1.0
                 float tx = (float)x / atlas_width; 
-
                 float tc_width = (float)char_set[c].size.x / atlas_width;
                 float tc_height = (float)char_set[c].size.y / atlas_height; 
+
                 char_set[c].tex_coords.resize(12); // resize the glyph to hold the initialization list
                 char_set[c].tex_coords = // these are four vertexes(vec2) becuase were are using indicies
                 {
@@ -209,6 +211,8 @@ namespace abstractgl
             highest_glpyh_size = atlas_height;
 
             abstractgl::unbind_texture();
+
+            return failed_glyphs;
         }
 
         void font::end()

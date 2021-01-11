@@ -22,8 +22,10 @@ project(PMUT)
 
 set(BUILD_LINUX TRUE)
 
-if(BUILD_LINUX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -e -O3 -lglfw3 -lGLU -lGL -lX11 -lXxf86vm -lXrandr -pthread -lXi -ldl -std=c++17")
+if(BUILD_LINUX) #expects x11 not wayland, NOTE: if your using wayland, linux may freeze entirely
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -lglfw3 -lGLU -lGL -lX11 -lXxf86vm -lXrandr -pthread -lXi -ldl -std=c++17")
+elseif(BUILD_WINDOWS) 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -lglfw3 -lGLU -lGL -std=c++17")
 endif()
 
 #PMUT(PORTER MULTI USE TERMINAL) - networking, file manipulation, and live app manipulation

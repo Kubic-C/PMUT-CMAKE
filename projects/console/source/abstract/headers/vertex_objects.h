@@ -39,27 +39,27 @@ namespace abstractgl
     {
     public: 
         // pass a already existing vbo
-        vertex_buffer(unsigned int id, unsigned int type); 
+        vertex_buffer(uint32_t id, uint32_t type); 
 
         // make a new vbo
-        vertex_buffer(unsigned int type);
+        vertex_buffer(uint32_t type);
 
         // give no type
         vertex_buffer();
         
     public: // methods ---
         // set the type of buffer i.e. GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY etc.
-        void set_type(unsigned int type);
+        void set_type(uint32_t type);
 
         // tell opengl to put data inside of the buffer
         void buffer_data(
             long size,          // size of the data to be put in the vbo
             const void* data,   // a pointer to the data to be put in the vbo
-            unsigned int usage  // see https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+            uint32_t usage  // see https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
         ); 
  
         // this update the data on the gpu(replacing whatever was there)
-        void update_buffer(unsigned int size, void* data);
+        void update_buffer(uint32_t size, void* data);
 
         // binds the buffer
         void bind();
@@ -71,14 +71,14 @@ namespace abstractgl
         void unbind();
 
         // this will generate a new buffer
-        void gen(unsigned int type);
+        void gen(uint32_t type);
 
         // delete the buffer
         void delete_b();
 
     private:
-        unsigned int id; // the vbo's id given by opengl
-        unsigned int type; // the type of data stored in the buffer
+        uint32_t id; // the vbo's id given by opengl
+        uint32_t type; // the type of data stored in the buffer
     };
 
     /*
@@ -97,9 +97,9 @@ namespace abstractgl
         // tell opengl how the data shall be read inside of the 
         // currently bound vbo, also adding the vbo to the vao
         void vertex_attrib_pointer(
-            unsigned int index, // where in the array
-            unsigned int size,  // 
-            unsigned int type,  // GL_FLOAT, etc.
+            uint32_t index, // where in the array
+            uint32_t size,  // 
+            uint32_t type,  // GL_FLOAT, etc.
             unsigned char norm, // is normalized(already a float)
             int stride,         // how many bytes to get to the vertex
             const void* offset  // where should it start
@@ -118,7 +118,7 @@ namespace abstractgl
         void delete_a();
 
    private:
-        unsigned int id; // the vao's id given by opengl
+        uint32_t id; // the vao's id given by opengl
    };
 } 
 

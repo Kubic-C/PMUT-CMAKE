@@ -19,8 +19,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 */
-#ifndef SHADERS_H
-#define SHADERS_H
+#ifndef ABSTRACT_SHADERS_H
+#define ABSTRACT_SHADERS_H
 
 #include "vertex_objects.h"
 
@@ -36,11 +36,11 @@ namespace abstractgl
    {
    public:
         // create a new shader
-        shader(unsigned int type);
+        shader(uint32_t type);
 
     public: // methods ---
         // this will get the id of a file
-        unsigned int get_id();
+        uint32_t get_id();
         
         // get the shader source code from a file, returns a boolean value, false mean it could not get the shader, true means it was able to get the shader
         bool set_shader_src_from_file(std::string dir, std::string shader_name);
@@ -52,8 +52,8 @@ namespace abstractgl
         void delete_s();
 
     private:
-        unsigned int id; // id of the shader given by opengl
-        unsigned int type; // the type of the shader
+        uint32_t id; // id of the shader given by opengl
+        uint32_t type; // the type of the shader
         std::string shader_source; // the shader source code
         char* c_shader_source; // allows compatabilty with c functions - c str version of shader source code
    };
@@ -89,17 +89,17 @@ namespace abstractgl
         void delete_p();
 
         // gets the id of the program
-        unsigned int get_id();
+        uint32_t get_id();
 
         // uses the program/puts the program on the GPU
         void use();
 
     private:
-        unsigned int id;
+        uint32_t id;
     };
 
     // compile both vertex and fragment
     program compile_shaders(std::string dir, std::string vert_name, std::string frag_name);
 }
 
-#endif
+#endif // ABSTRACT_SHADERS_H

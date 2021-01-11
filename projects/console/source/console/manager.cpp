@@ -45,11 +45,13 @@ namespace console
     {
         std::string gl_str; 
         window = abstractgl::startup(abstractgl::window_data("hello world", width, height), gl_str, OGL_VERSION);
-        std::cout << gl_str << '\n';
 
         good = window;
         if(!good)
+        {
+            std::cout << gl_str << "\ninsure that gpu drivers have OpenGL version: " << STR_OGL_VERSION << '\n';
             return;
+        }
 
         current_manager = this;
     }
@@ -78,17 +80,16 @@ namespace console
         render->print_poll();
         render->full_unbind();
 
-        // remove all non static strings
         meta_str_buffer.erase(std::remove_if(meta_str_buffer.begin(), meta_str_buffer.end(),
                  &remove_if_non_static), meta_str_buffer.end());
     }
 
-    void manager::print(std::string text, modifier modifier_, int rp, float r, float b, float g, bool nextline)
+    void manager::print(std::string text, modifier modifier_, int rp, float r, float g, float b, bool nextline)
     {
         meta_str_buffer.push_back((meta_str){modifier_, text, nextline, glm::ivec3(r, g, b), rp});
     }
 
-    void manager::free_print(std::string text, float r, float b, float g, float x, float y)
+    void manager::free_print(std::string text, float r, float g, float b, float x, float y)
     {
         render->full_bind();
         render->free_print(text, glm::vec2(x, y), glm::vec3(r, g, b), 1.0f);
@@ -115,7 +116,11 @@ namespace console
 
     void manager::set_all_callbacks()
     {
+        // credits to https://stackoverflow.com/a/59428098
+        glfwSetWindowSizeLimits(window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE); // make sure not to miss any keys
+        glfwSetFramebufferSizeCallback(window, framebuffer_callback);
         glfwSetWindowSizeCallback(window, window_size_callback);
         glfwSetCharCallback(window, character_callback);
         glfwSetKeyCallback(window, key_callback);
@@ -123,8 +128,7 @@ namespace console
 
     void manager::window_size_callback(GLFWwindow* window, int width, int height)
     {
-       glViewport(0, 0, width, height);
-       current_manager->render->set_start(10, height);
+       current_manager->render->set_start(0, height);
        current_manager->render->set_projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height)));
        current_manager->width = width, current_manager->height = height;
     }
@@ -137,6 +141,11 @@ namespace console
             case GLFW_KEY_F1: // clear static strings
                 if(action == GLFW_PRESS)
                     current_manager->clear_output_buffer();
+                break;
+
+            case GLFW_KEY_F2:
+                if(action == GLFW_PRESS || action == GLFW_REPEAT)
+                     current_manager->print("static string mod test", console::modifier::static_mod, 0, 0.5f, 0.0f, 1.0f);
                 break;
 
             case GLFW_KEY_V: // get the clipboard
@@ -156,6 +165,7 @@ namespace console
                 if(current_manager->active_input.find_first_not_of(' ') 
                         == std::string::npos && action != GLFW_PRESS)
                     break;
+                current_manager->print(current_manager->active_input, console::modifier::static_mod, 0, 0.5f, 0.0f, 1.0f);
                 current_manager->last_input.push_back(current_manager->active_input);
                 current_manager->active_input.clear();
                 current_manager->last_input_index = current_manager->last_input.size()-1;
@@ -167,7 +177,6 @@ namespace console
                 break;
 
             case GLFW_KEY_DOWN: // cycle through last inputs
-            std::cout << current_manager->last_input_index << " | size: " << current_manager->last_input.size() << '\n';
                 if(action == GLFW_PRESS && !current_manager->last_input.empty())
                     if(current_manager->last_input_index + 1 < current_manager->last_input.size())
                     {
@@ -178,8 +187,8 @@ namespace console
                 break;
 
             case GLFW_KEY_UP: // cycle through last inputs
-            std::cout << current_manager->last_input_index << " | size: " << current_manager->last_input.size() << '\n';
                 if(action == GLFW_PRESS  && !current_manager->last_input.empty())
+                {
                     if(current_manager->last_input_index - 1 >= 0)
                     {
                         current_manager->last_input_index--;
@@ -190,6 +199,7 @@ namespace console
                     {
                        current_manager->copy_last_input_to_active_buffer();
                     }
+                }
                 break;
 
             default:
@@ -202,5 +212,10 @@ namespace console
     void manager::character_callback(GLFWwindow* window, unsigned int codepoint)
     {
         current_manager->active_input += (char)codepoint;
+    }
+
+    void manager::framebuffer_callback(GLFWwindow* window, int width, int height)
+    {
+        glViewport(0, 0, width, height);
     }
 }

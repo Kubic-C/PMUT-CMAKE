@@ -32,7 +32,7 @@ namespace abstractgl
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void activate_texture(unsigned int slot)
+    void activate_texture(uint32_t slot)
     {
         glActiveTexture(slot);
     }
@@ -79,16 +79,16 @@ namespace abstractgl
         return true;
     }
 
-    void texture::activate(unsigned int slot)
+    void texture::activate(uint32_t slot)
     {
         activate_texture(slot); // activate the texture slot first before binding texture
 		bind();
     }
 
     void texture::allocate(
-        unsigned int type,
-        unsigned int internal_format, 
-        unsigned int format,
+        uint32_t type,
+        uint32_t internal_format, 
+        uint32_t format,
         int width, 
         int height,
         void* pixels)
@@ -109,10 +109,10 @@ namespace abstractgl
     }
 
     void texture::load_data(
-        unsigned int type,
-        unsigned int xoffset, 
-        unsigned int yoffset, 
-        unsigned int format,
+        uint32_t type,
+        uint32_t xoffset, 
+        uint32_t yoffset, 
+        uint32_t format,
         int width, 
         int height,
         void* pixels)
@@ -155,9 +155,8 @@ namespace abstractgl
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
-     void set_flip_images_on_load()
+     void set_flip_images_on_load(bool set_flag)
      {
-         static bool flip = false;
-         stbi_set_flip_vertically_on_load(!flip);
+         stbi_set_flip_vertically_on_load(set_flag);
      }
 }

@@ -34,7 +34,8 @@
 
 #include "render.h"
 
-#define OGL_VERSION 4,0
+#define OGL_VERSION 4, 0
+#define STR_OGL_VERSION "4.0"
 
 namespace console
 {
@@ -48,6 +49,7 @@ namespace console
     bool remove_if_not_perma(meta_str meta_str);
 
     /* manager class
+     *
      * 
      * the manager class when initliazed
      * WILL start opengl and create a window
@@ -86,10 +88,12 @@ namespace console
         void poll();
 
         // add to string buffer
-        void print(std::string text, modifier modifier_, int rp, float r, float b, float g, bool nextline = true);
+        void print(std::string text, modifier modifier_, int rp, 
+                float r, float g, float b, bool nextline = true);
 
         // print freely wherever on the string
-        void free_print(std::string text, float r, float b, float g, float x, float y);
+        void free_print(std::string text, 
+                float r, float g, float b, float x, float y);
 
         // remove everything, execept perma string
         void clear_output_buffer();
@@ -105,14 +109,18 @@ namespace console
         // set all callbacks, only do this when render_context is set
         void set_all_callbacks();
 
-        // window size callback
+        // window size callback, sets uniform projection
         static void window_size_callback(GLFWwindow* window, int width, int height);
 
-        // key callback
+        // key callback, this will allow keyboard shortcuts to be possible
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-        // char callback
+        // char callback, this will all keyboard input into the active_input var
         static void character_callback(GLFWwindow* window, unsigned int codepoint);
+
+        // frame buffer callback, this is used because not all systems return 
+        // the size of the window in pixels, which glViewport needs
+        static void framebuffer_callback(GLFWwindow* window, int width, int height);
 
     public: // members
         // output
@@ -124,7 +132,7 @@ namespace console
         // input
         std::string active_input; // active input buffer.
         std::vector<std::string> last_input; // all inputs previous to the active input.
-        int last_input_index; // allows the user to cylce to previous indexes
+        uint32_t last_input_index; // allows the user to cylce to previous indexes
 
     };
 

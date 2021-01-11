@@ -24,5 +24,27 @@
 
 namespace console
 {
-    
+    void timer::start()
+    {
+        ft_start = std::chrono::high_resolution_clock::now();
+    }   
+
+    void timer::end()
+    {
+        ft_end = std::chrono::high_resolution_clock::now();
+        frametime = ft_end - ft_start;
+        if(frametime.count() > longest_frametime)
+            longest_frametime = frametime.count();
+        else if(frametime.count() < shortest_frametime)
+            shortest_frametime = frametime.count();
+
+        current_manager->print(DISPLAYING_INFO + std::string(" frametime(ft): ") + std::to_string(frametime.count()*1000),
+                        modifier::non_static_mod, 2, COLOR_AQUA_3P);
+
+        current_manager->print(DISPLAYING_INFO + std::string(" shortest ft: ") + std::to_string(shortest_frametime*1000),
+                        modifier::non_static_mod, 2, COLOR_AQUA_3P);
+
+        current_manager->print(DISPLAYING_INFO + std::string(" longest ft: ") + std::to_string(longest_frametime*1000),
+                        modifier::non_static_mod, 2, COLOR_AQUA_3P);
+    }
 }

@@ -49,6 +49,8 @@
 #include <map>
 
 #define DEFAULT_BUFFER_TARGET GL_ARRAY_BUFFER
+
+// defualt vector buffer space, std::vector::reserver(DEFUALT_VBUFFER_SPACE)
 #define DEFAULT_VBUFFER_SPACE 1024
 
 //namespace abstract for all abstract opengl objects

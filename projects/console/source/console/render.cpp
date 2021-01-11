@@ -68,7 +68,7 @@ namespace console
         float x = pos.x;
         for(auto c : text)
         {
-            switch(c) { case '\n': x = pos.x; pos.y -= text_font->highest_glpyh_size; continue; }
+            switch(c) { case '\n': nextline(pos.x, x, pos.y); continue; }
 
             abstractgl::ft::character& ch = text_font->char_set[c];
 
@@ -93,7 +93,7 @@ namespace console
         }
     }
 
-    void render_context::parse_meta_str_vector(std::vector<meta_str> vector)
+    void render_context::parse_meta_str_vector(const std::vector<meta_str>& vector)
     {
         // save the position of x, so if there is a newline character x = pos.x
         float x = print_x, y = print_y;
@@ -101,7 +101,7 @@ namespace console
         {
             for(auto c : mstr.str)
             {
-                switch(c) { case '\n': x = print_x; y -= text_font->highest_glpyh_size; continue; }
+                switch(c) { case '\n': nextline(print_x, x, y); continue; }
 
                 abstractgl::ft::character& ch = text_font->char_set[c];
 
@@ -131,8 +131,7 @@ namespace console
                     continue;
 
                 case true:
-                    y -= text_font->highest_glpyh_size;
-                    x = print_x;
+                    nextline(print_x, x, y);
                     break;
             }
         }
@@ -182,7 +181,8 @@ namespace console
 
     void render_context::set_start(int x, int y)
     {
-        start.x = x, start.y = y - text_font->highest_glpyh_size;
+        start.x = x + (text_font->widest_glyph_size / 2),
+        start.y = y - text_font->highest_glpyh_size;
     }
 
     void render_context::set_projection(glm::fmat4 projection)
@@ -201,6 +201,7 @@ namespace console
 			indices[i + 0] = 2 + offset;
 			indices[i + 1] = 3 + offset;
 			indices[i + 2] = 0 + offset;
+
 			indices[i + 3] = 0 + offset;
 			indices[i + 4] = 1 + offset;
 			indices[i + 5] = 3 + offset;
@@ -208,5 +209,11 @@ namespace console
 		}
 
         font_indi.buffer_data(sizeof(uint)*6*CHARACTER_RENDER_LIMIT, &indices[0], GL_STATIC_DRAW);
+    }
+
+    void render_context::nextline(float& start_x, float& x2, float& y2)
+    {
+        x2 = start_x;
+        y2 -= text_font->highest_glpyh_size + 5 /*<- padding*/;
     }
 }

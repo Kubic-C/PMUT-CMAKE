@@ -25,12 +25,12 @@
 namespace abstractgl
 {
     // vertex buffer definitions
-    vertex_buffer::vertex_buffer(unsigned int id_, unsigned int type_)
+    vertex_buffer::vertex_buffer(uint32_t id_, uint32_t type_)
         : id(id_), type(type_)
     { 
     }
 
-    vertex_buffer::vertex_buffer(unsigned int type_)
+    vertex_buffer::vertex_buffer(uint32_t type_)
     {
         gen(type_);
     }
@@ -39,7 +39,7 @@ namespace abstractgl
     {
     }
     
-     void vertex_buffer::set_type(unsigned int type)
+     void vertex_buffer::set_type(uint32_t type)
      {
         this->type = type;
      }
@@ -47,7 +47,7 @@ namespace abstractgl
     void vertex_buffer::buffer_data(
        long size,         
        const void* data,  
-       unsigned int usage 
+       uint32_t usage 
     )
     {
         bind();
@@ -55,7 +55,7 @@ namespace abstractgl
         unbind();
     }
  
-    void vertex_buffer::update_buffer(unsigned int size, void* data)
+    void vertex_buffer::update_buffer(uint32_t size, void* data)
     {
         bind();
         glBufferSubData(type, 0, size, data);
@@ -72,7 +72,7 @@ namespace abstractgl
         glBindBuffer(DEFAULT_BUFFER_TARGET, 0); 
     }
 
-    void vertex_buffer::gen(unsigned int new_type)
+    void vertex_buffer::gen(uint32_t new_type)
     {
         type = new_type;
         glGenBuffers(1, &id);
@@ -85,9 +85,9 @@ namespace abstractgl
 
     // vertex array definitions
     void vertex_array::vertex_attrib_pointer(
-        unsigned int index,
-        unsigned int size,  
-        unsigned int type,  
+        uint32_t index,
+        uint32_t size,  
+        uint32_t type,  
         unsigned char norm, 
         int stride,         
         const void* offset 
@@ -100,7 +100,7 @@ namespace abstractgl
         unbind();
     }
 
-    vertex_array::vertex_array(unsigned int id)
+    vertex_array::vertex_array(uint32_t id)
         : id(id)
     {
     }

@@ -63,9 +63,7 @@ namespace console
     * it uses batch rendering
     * to make rendering faster
     * but with the downside of high
-    * VRAM usage, which is only 
-    * a couple of megabytes but
-    * a decent amout none the less.
+    * VRAM usage, 
     * 
     * increasing the CHARACTER_RENDER_LIMIT
     * will also increase the amout of
@@ -101,7 +99,7 @@ namespace console
         void parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text);
 
         // this will parse a meta_str vector
-        void parse_meta_str_vector(std::vector<meta_str> vector);
+        void parse_meta_str_vector(const std::vector<meta_str>& vector);
 
         // bind everything needed to print,
         void full_bind();
@@ -115,20 +113,25 @@ namespace console
         // set projection uniform in vertex shader
         void set_projection(glm::fmat4 projection);
 
+    public: // global vars
+        abstractgl::ft::font* text_font; // this is the font that will be used to render
+
     private:
         abstractgl::program font_program; // this is shader program that will be responsible for rendering text
-        abstractgl::ft::font* text_font; // this is the font that will be used to render
         abstractgl::vertex_array font_vao; // contains how data should be read
         abstractgl::vertex_buffer font_vbo; // contains raw data
         abstractgl::vertex_buffer font_indi; // inidces
         std::vector<float>* output_buffer; // used for print
         int n_of_char = 0; // the amount of characters to be rendered
-        int print_x = 0; // tell where text inside of print poll should get printed
-        int print_y = 0; // tell where text inside of print poll should get printed
+        float print_x = 0; // tell where text inside of print poll should get printed
+        float print_y = 0; // tell where text inside of print poll should get printed
         glm::ivec2 start; // begginning of where print_poll will print
 
         // generate all indices up to the CHARACTER_LIMIT
         void generate_indexes();
+
+        // next line
+        void nextline(float& start_x, float& x2, float& y2);
     };
 }
  

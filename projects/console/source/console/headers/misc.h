@@ -29,10 +29,44 @@
 #define CONSOLE_MISC_H
 
 #include "manager.h"
+#include <chrono>
+
+#define PROMPTING_USER "[PMUT]"
+#define DISPLAYING_INFO "<PMUT>"
+
+// RGB *color or mix of color* 3 paremeters
+
+#define COLOR_RED_3P      1.0f, 0.0f, 0.0f
+#define COLOR_GREEN_3P    0.0f, 1.0f, 0.0f
+#define COLOR_BLUE_3P     0.0f, 0.0f, 1.0f
+#define COLOR_AQUA_3P     0.0f, 1.0f, 1.0f
+#define COLOR_YELLOW_3P   1.0f, 1.0f, 0.0f
 
 namespace console
 {
+    /*  timer class
+     * this will count the
+     * time between start()
+     * and end() methods, giving 
+     * back the frametime
+     * 
+    */
+    class timer
+    {
+    public: // methods --
+        // start timer
+        void start();
 
+        // end timer
+        void end();
+
+    private:
+        long double longest_frametime = 0.0L;
+        long double shortest_frametime = 100.0L;
+        std::chrono::duration<long double> frametime;
+        std::chrono::time_point<std::chrono::high_resolution_clock> ft_start;
+        std::chrono::time_point<std::chrono::high_resolution_clock> ft_end;
+    };
 }
 
 #endif // CONSOLE_MISC_H
