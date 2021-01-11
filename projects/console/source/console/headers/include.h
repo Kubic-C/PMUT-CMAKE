@@ -20,8 +20,8 @@
 
 */
 
-/* include.h
-    master include file
+/* 
+    include.h master include file
 */
 
 #ifndef CONSOLE_INCLUDE_H

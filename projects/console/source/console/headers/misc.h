@@ -20,7 +20,8 @@
 
 */
 
-/* misc.h
+/* 
+    misc.h
     defines functions that print
     data onto the console screen.
 */

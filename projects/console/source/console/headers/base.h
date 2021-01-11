@@ -28,6 +28,7 @@
     keyboard etc.) and output meaning rendering
     to the window.
 */
+
 #ifndef CONSOLE_BASE_H
 #define CONSOLE_BASE_H
 
