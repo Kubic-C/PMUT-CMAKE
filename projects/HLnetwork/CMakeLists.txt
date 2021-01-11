@@ -32,13 +32,13 @@ set(console_sources
 )
 
 add_library(
-    lib-hlnetwork
+    hlnetwork
     ${console_headers}
     ${console_sources}
 )
 
 #EXTERNAL 
-target_link_libraries(lib-hlnetwork PUBLIC lib-asio)
+target_link_libraries(hlnetwork PUBLIC lib-asio)
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
-target_include_directories(lib-hlnetwork PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
+target_include_directories(hlnetwork PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")

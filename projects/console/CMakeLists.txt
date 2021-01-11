@@ -31,35 +31,35 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_library(
-    lib-console
+    console
     ${SOURCES}
 )
 
 # EXTERNAL
 # OPENGL 
 find_package(OpenGL REQUIRED)
-target_link_libraries(lib-console PRIVATE OpenGL::GL)
+target_link_libraries(console PRIVATE OpenGL::GL)
 # GLFW
 find_library(lib-glfw3path libglfw3.a)
-target_link_libraries(lib-console PRIVATE ${lib-glfw3path})
+target_link_libraries(console PRIVATE ${lib-glfw3path})
 # GLEW
 find_package(GLEW REQUIRED)
-target_link_libraries(lib-console PRIVATE GLEW::GLEW)
+target_link_libraries(console PRIVATE GLEW::GLEW)
 
 # DLL
-target_link_libraries(lib-console PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(console PRIVATE ${CMAKE_DL_LIBS})
 
 # STBI IMAGE
-target_link_libraries(lib-console PRIVATE lib-stbi_image)
+target_link_libraries(console PRIVATE lib-stbi_image)
 
 # FREETYPE
 find_package(Freetype REQUIRED)
-target_link_libraries(lib-console PRIVATE ${FREETYPE_LIBRARIES})
-target_include_directories(lib-console PUBLIC ${FREETYPE_INCLUDE_DIRS})
+target_link_libraries(console PRIVATE ${FREETYPE_LIBRARIES})
+target_include_directories(console PUBLIC ${FREETYPE_INCLUDE_DIRS})
 message(STATUS "${FREETYPE_LIBRARIES}\n-- ${FREETYPE_INCLUDE_DIRS}")
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
-target_include_directories(lib-console PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source")
+target_include_directories(console PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
-target_include_directories(lib-console PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
+target_include_directories(console PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
