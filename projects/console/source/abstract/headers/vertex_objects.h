@@ -21,8 +21,9 @@
 */
 
 /*
-    abstraction for vertex buffer objects and vertex array objects
+    vertex_object.h deals with abstraction for vertex buffer objects and vertex array objects
 */
+
 #ifndef ABSTRACT_VERTEX_OBJECTS_H
 #define ABSTRACT_VERTEX_OBJECTS_H
 

@@ -91,7 +91,8 @@ namespace abstractgl
         uint32_t format,
         int width, 
         int height,
-        void* pixels)
+        void* pixels
+    )
     {
         bind();
         glTexImage2D(
@@ -115,7 +116,8 @@ namespace abstractgl
         uint32_t format,
         int width, 
         int height,
-        void* pixels)
+        void* pixels
+    )
     { 
         bind();
         glTexSubImage2D(

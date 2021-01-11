@@ -24,6 +24,7 @@
     startup.h deals with starting up glfw and
     glew, along with the creation of a window.
 */
+
 #ifndef ABSTRACT_STARTUP_H
 #define ABSTRACT_STARTUP_H
 

@@ -20,7 +20,10 @@
 
 */
 
-// master include
+/*
+    include.h, master include
+*/
+
 #ifndef ABSTRACT_INCLUDE_H
 #define ABSTRACT_INCLUDE_H
 

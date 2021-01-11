@@ -19,6 +19,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 */
+
+/*
+    shaders.h deals with abstracting opengl shaders and programs
+*/
+
 #ifndef ABSTRACT_SHADERS_H
 #define ABSTRACT_SHADERS_H
 

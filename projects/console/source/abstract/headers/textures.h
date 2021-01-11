@@ -20,6 +20,10 @@
 
 */
 
+/*
+    textures.h deals with abstracting opengl textures into classes
+*/
+
 #ifndef ABSTRACT_TEXTURES_H
 #define ABSTRACT_TEXTURES_H
 

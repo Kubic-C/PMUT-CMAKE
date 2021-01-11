@@ -38,7 +38,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <ft2build.h> // if an error appears here(your IDE is telling you there is an error ignore it, otherwise don't)
+#include <ft2build.h>
 #include FT_FREETYPE_H  
 
 // usual includes
@@ -53,7 +53,6 @@
 // defualt vector buffer space, std::vector::reserver(DEFUALT_VBUFFER_SPACE)
 #define DEFAULT_VBUFFER_SPACE 1024
 
-//namespace abstract for all abstract opengl objects
 namespace abstractgl
 {
 }

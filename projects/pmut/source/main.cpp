@@ -68,7 +68,7 @@ int main()
     glfwSwapInterval(1);
 
     console::timer ft_timer;
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     while (!glfwWindowShouldClose(console_test.window))
     {
         ft_timer.start();

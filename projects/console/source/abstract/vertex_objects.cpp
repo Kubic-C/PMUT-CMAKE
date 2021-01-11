@@ -39,10 +39,11 @@ namespace abstractgl
     {
     }
     
-     void vertex_buffer::set_type(uint32_t type)
-     {
-        this->type = type;
-     }
+    void vertex_buffer::set_type(uint32_t type)
+    {
+       this->type = type;
+    }
+
 
     void vertex_buffer::buffer_data(
        long size,         
