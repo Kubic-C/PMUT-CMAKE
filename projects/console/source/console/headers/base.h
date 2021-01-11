@@ -1,6 +1,6 @@
 /*
     PMUT (Porter Multi Use Terminal) is a multi use command line,
-    that can in the future do networking, file manipulation, and
+    that can do networking, file manipulation, and
     live app manipulation.
     
     PMUT  Copyright (C) 2021 Sawyer Porter
@@ -17,7 +17,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 */
 
 /*
