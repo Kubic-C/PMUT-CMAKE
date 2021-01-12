@@ -23,7 +23,7 @@
 
 namespace pmut
 {
-     void timer::start()
+    void timer::start()
     {
         ft_start = std::chrono::high_resolution_clock::now();
     }   
@@ -42,5 +42,11 @@ namespace pmut
             DISPLAYING_INFO, " shortest ft: ", shortest_frametime*1000, '\n',
             DISPLAYING_INFO, " longest ft: ", longest_frametime*1000, '\n'
         );
+    }
+
+    void timer::restart()
+    {
+        longest_frametime = 0.0L;
+        shortest_frametime = 100.0L;
     }
 }

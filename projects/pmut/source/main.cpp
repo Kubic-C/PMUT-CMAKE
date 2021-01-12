@@ -72,10 +72,13 @@ int main()
     {
         ft_timer.start();
 
-        console_test.print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_GREEN_3P);
+        console_test.print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
 
         console_test.print_m(console::modifier::non_static_mod, 0, COLOR_RED_3P,
                 console_test.active_input, '\n');
+
+        if(glfwGetKey(console_test.window, GLFW_KEY_F3) == GLFW_PRESS)
+            ft_timer.restart();
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 

@@ -30,13 +30,14 @@
 #include <chrono>
 
 #define DISPLAYING_INFO "{PMUT}"
-#define PROMPTING_USER "[PMUT]"
+#define PROMPTING_USER "[PMUT]<<"
 
 // COLOE *color or mix of color* 3 paremeters
 
 #define COLOR_RED_3P      1.0f, 0.0f, 0.0f
 #define COLOR_BLUE_3P     0.0f, 0.0f, 1.0f
 #define COLOR_AQUA_3P     0.0f, 1.0f, 1.0f
+#define COLOR_WHITE_3P    1.0f, 1.0f, 1.0f
 #define COLOR_GREEN_3P    0.0f, 1.0f, 0.0f
 #define COLOR_YELLOW_3P   1.0f, 1.0f, 0.0f
 
@@ -57,6 +58,9 @@ namespace pmut
 
         // end timer
         void end(console::manager& console_manager);
+
+        // restart
+        void restart();
 
     private:
         long double longest_frametime = 0.0L;

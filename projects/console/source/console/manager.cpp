@@ -154,7 +154,7 @@ namespace console
 
             case GLFW_KEY_F2:
                 if(action == GLFW_PRESS || action == GLFW_REPEAT)
-                     manager_s->print("static string mod test", console::modifier::static_mod, 0, 0.5f, 0.0f, 1.0f);
+                     manager_s->print("static string mod test\n", console::modifier::static_mod, -1, 0.5f, 0.0f, 1.0f);
                 break;
 
             case GLFW_KEY_V: // get the clipboard
