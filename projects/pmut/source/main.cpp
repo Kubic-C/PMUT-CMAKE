@@ -19,13 +19,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "console/headers/include.h"
-#include "HLnetwork/headers/base.h"
+#include "headers/console_data.h"
 
 int main()
 {
-    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
-
     bool is_good = false;
     console::manager console_test("manager test", 1000, 1000, is_good);
     if(!is_good)
@@ -69,14 +66,16 @@ int main()
 
     glfwSwapInterval(1);
 
-    console::timer ft_timer;
+    pmut::timer ft_timer;
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     while (!glfwWindowShouldClose(console_test.window))
     {
         ft_timer.start();
 
+        console_test.print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_GREEN_3P);
+
         console_test.print_m(console::modifier::non_static_mod, 0, COLOR_RED_3P,
-                PROMPTING_USER, console_test.active_input, '\n');
+                console_test.active_input, '\n');
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 

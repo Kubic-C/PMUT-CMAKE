@@ -19,17 +19,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* 
-    include.h master include file
+/*
+ * base.h of pmut includes both console
+ * and hlnetwork
+ * 
 */
 
-#ifndef CONSOLE_INCLUDE_H
-#define CONSOLE_INCLUDE_H
+#ifndef PMUT_BASE_H
+#define PMUT_BASE_H
 
-#include "manager.h"
+#include "console/headers/include.h"
+#include "HLnetwork/headers/base.h"
 
-namespace console
+namespace pmut
 {
 }
 
-#endif // CONSOLE_INCLUDE_H
+#endif // PMUT_BASE_H

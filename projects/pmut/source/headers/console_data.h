@@ -19,30 +19,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* 
-    misc.h
-    defines functions that print
-    data onto the console screen.
+/*
+    console_data.h, timers, colors, and other console related  data,
 */
 
-#ifndef CONSOLE_MISC_H
-#define CONSOLE_MISC_H
+#ifndef CONSOLE_DATA_H
+#define CONSOLE_DATA_H
 
-#include "manager.h"
+#include "base.h"
 #include <chrono>
 
+#define DISPLAYING_INFO "{PMUT}"
 #define PROMPTING_USER "[PMUT]"
-#define DISPLAYING_INFO "<PMUT>"
 
-// RGB *color or mix of color* 3 paremeters
+// COLOE *color or mix of color* 3 paremeters
 
 #define COLOR_RED_3P      1.0f, 0.0f, 0.0f
-#define COLOR_GREEN_3P    0.0f, 1.0f, 0.0f
 #define COLOR_BLUE_3P     0.0f, 0.0f, 1.0f
 #define COLOR_AQUA_3P     0.0f, 1.0f, 1.0f
+#define COLOR_GREEN_3P    0.0f, 1.0f, 0.0f
 #define COLOR_YELLOW_3P   1.0f, 1.0f, 0.0f
 
-namespace console
+namespace pmut
 {
     /*  timer class
      * this will count the
@@ -58,7 +56,7 @@ namespace console
         void start();
 
         // end timer
-        void end(manager& console_manager);
+        void end(console::manager& console_manager);
 
     private:
         long double longest_frametime = 0.0L;
@@ -69,4 +67,4 @@ namespace console
     };
 }
 
-#endif // CONSOLE_MISC_H
+#endif // CONSOLE_DATA_H

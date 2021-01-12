@@ -19,16 +19,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "headers/misc.h"
+#include "headers/console_data.h"
 
-namespace console
+namespace pmut
 {
-    void timer::start()
+     void timer::start()
     {
         ft_start = std::chrono::high_resolution_clock::now();
     }   
 
-    void timer::end(manager& console_manager)
+    void timer::end(console::manager& console_manager)
     {
         ft_end = std::chrono::high_resolution_clock::now();
         frametime = ft_end - ft_start;
@@ -37,7 +37,7 @@ namespace console
         else if(frametime.count() < shortest_frametime)
             shortest_frametime = frametime.count();
 
-        console_manager.print_m(modifier::non_static_mod, 2, COLOR_AQUA_3P,
+        console_manager.print_m(console::modifier::non_static_mod, 2, COLOR_AQUA_3P,
             DISPLAYING_INFO, " frametime(ft): ", frametime.count()*1000, '\n',
             DISPLAYING_INFO, " shortest ft: ", shortest_frametime*1000, '\n',
             DISPLAYING_INFO, " longest ft: ", longest_frametime*1000, '\n'

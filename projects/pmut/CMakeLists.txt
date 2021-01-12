@@ -18,7 +18,12 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-add_executable(pmut source/main.cpp)
+file(GLOB_RECURSE SOURCES_CONSOLE
+    source/headers/*.h
+    source/*.cpp
+)
+
+add_executable(pmut ${SOURCES_CONSOLE})
 
 #EXTERNAL
 
