@@ -19,81 +19,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "headers/console_data.h"
+#include "headers/app.h"
 
 int main()
 {
-    bool is_good = false;
-    console::manager console_test("manager test", 1000, 1000, is_good);
-    if(!is_good)
-        return -1;
+    pmut::startup(
+        "stupid fucking window",
+        1000, 1000,
+        "./misc/fonts/__font.ttf",
+        "./misc/shaders/font.glsl",
+        "vertex",
+        "fragment");
 
-    console_test.bind();
-
-    abstractgl::enable_blend();
-
-    // start the ft library, extract the font and then pass it to the render context //
-    abstractgl::ft::lib_ft freetype;
-    freetype.start();
-
-    abstractgl::ft::font font;
-    if(!font.load_font(freetype, 0, 30, "./misc/fonts/__font.ttf"))
-    {
-        font.end();
-        freetype.end();
-        return -1;
-    }
-
-    std::string failed_glpyhs = font.compute_font();
-    std::cout << failed_glpyhs << '\n';
-
-    font.end();
-    freetype.end();
-
-    // build an compile the shader program
-    abstractgl::program font_program = 
-            abstractgl::compile_shaders("./misc/shaders/font.glsl", "vertex", "fragment");
-
-    // setup the render context
-    console::render_context render;
-    render.use_font(font);
-    render.use_program(font_program);
-    console_test.use_render_context(render);
-    console_test.set_all_callbacks();
-
-    console_test.print_m(console::modifier::perma_mod, 5, COLOR_YELLOW_3P,
-                glGetString(GL_VERSION), '\n');
-
-    glfwSwapInterval(1);
-
-    pmut::timer ft_timer;
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    while (!glfwWindowShouldClose(console_test.window))
-    {
-        ft_timer.start();
-
-        console_test.print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
-
-        console_test.print_m(console::modifier::non_static_mod, 0, COLOR_RED_3P,
-                console_test.active_input, '\n');
-
-        if(glfwGetKey(console_test.window, GLFW_KEY_F3) == GLFW_PRESS)
-            ft_timer.restart();
-
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT); 
-
-        console_test.poll();
-
-        glfwSwapBuffers(console_test.window);
-
-        /* process events, if any */
-        glfwPollEvents();
-
-        ft_timer.end(console_test);
-    }
-
-    return 0;
+    return pmut::app_loop();
 }
 
 /* TODO or MAYBE OPTIMIZE

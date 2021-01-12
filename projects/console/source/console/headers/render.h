@@ -30,7 +30,7 @@
 
 // the limit for how many characters are going to be on the screen
 // note: increasing or decreasing this number will increase or decrease VRAM usage
-#define CHARACTER_RENDER_LIMIT 5000
+#define CHARACTER_RENDER_LIMIT 1000
 
 namespace console
 {

@@ -19,22 +19,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/*
- * base.h of pmut includes both console
- * and hlnetwork
- * 
-*/
-
-#ifndef PMUT_BASE_H
-#define PMUT_BASE_H
-
-#include "console/headers/include.h"
-#include "HLnetwork/headers/base.h"
-
-typedef const std::string& stringref;
+#include "headers/app.h"
 
 namespace pmut
 {
-}
 
-#endif // PMUT_BASE_H
+    namespace flags
+    {
+        bool exit_app = false;
+    }
+
+    namespace data
+    {
+        console::render_context* renderer = nullptr;
+        abstractgl::program font_program = 0;
+        console::manager* console = nullptr;
+        abstractgl::ft::font font;
+        int exit_code = 0;
+    }
+
+}

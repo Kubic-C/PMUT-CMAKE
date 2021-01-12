@@ -122,6 +122,22 @@ namespace console
     {
         manager_s = this;
     }
+    
+    void manager::display_error()
+    {
+        int error = glGetError();
+        switch(error)
+        {
+            case 0: 
+                break;
+
+            default:
+                clear_output_buffer();
+                print_m(modifier::static_mod, 1, 1.0f, 0.0f, 0.0f, 
+                    "{PMUT}", " Opengl error occurred: ", error, '\n');
+                break;
+        }        
+    }
 
     void manager::set_all_callbacks()
     {

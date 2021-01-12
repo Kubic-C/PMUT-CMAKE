@@ -103,6 +103,9 @@ namespace console
             print(text, modifier_, rp, r, g, b);
         }
 
+        // display if an error
+        void display_error();
+
         // remove everything, execept perma strings
         void clear_output_buffer();
 
@@ -142,7 +145,7 @@ namespace console
         std::vector<std::string> last_input; // all inputs previous to the active input.
 
         static manager* manager_s; // allows static function to interact with the current manager
-        
+
     protected: // members
         // output
         render_context* render; // renderer

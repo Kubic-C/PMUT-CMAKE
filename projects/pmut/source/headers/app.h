@@ -20,21 +20,50 @@
 */
 
 /*
- * base.h of pmut includes both console
- * and hlnetwork
- * 
+    app.h defines a main loop for pmut to run in.
 */
 
-#ifndef PMUT_BASE_H
-#define PMUT_BASE_H
+#ifndef PMUT_APP_H
+#define PMUT_APP_H
 
-#include "console/headers/include.h"
-#include "HLnetwork/headers/base.h"
-
-typedef const std::string& stringref;
+#include "console_data.h"
 
 namespace pmut
 {
+    namespace flags
+    {
+        extern bool exit_app;
+    }
+
+    // global data
+    namespace data
+    {
+        extern console::render_context* renderer;
+        extern abstractgl::program font_program;
+        extern abstractgl::ft::font font;
+        extern console::manager* console;
+        extern int exit_code;
+    }
+
+    // load a font
+    void load_font(stringref dir_to_font, int size);
+
+    // exit pmut
+    void exit_app(int exit_code);
+
+    // startup pmut
+    void startup(
+        stringref name, 
+        int width,
+        int height, 
+        stringref dir_to_font, 
+        stringref dir_to_shaders, 
+        stringref vertex_name, 
+        stringref fragment_name
+    );
+
+    //  app_loop() defines a loop
+    int app_loop();
 }
 
-#endif // PMUT_BASE_H
+#endif // PMUT_APP_H

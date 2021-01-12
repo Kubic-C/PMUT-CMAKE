@@ -96,6 +96,12 @@ namespace abstractgl
         glDeleteShader(id);
     }
 
+    program::program(uint32_t id)
+        : id(id)
+    {
+
+    }
+
     // program method definitions
     program::program()
         : id(glCreateProgram())

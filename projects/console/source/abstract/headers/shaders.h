@@ -72,6 +72,9 @@ namespace abstractgl
         // create a new program
         program();
 
+        // pass a already existing program
+        program(uint32_t id);
+
         // add all shaders inside of program
         template<typename ... shaders_p>
         program(std::string& err, shaders_p& ... shaders_a)
