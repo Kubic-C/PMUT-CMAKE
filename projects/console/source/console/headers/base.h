@@ -37,4 +37,25 @@ namespace console
 {   
 }
 
+
+template<typename str_p>
+std::string convert_to_string(const str_p& str_a)
+{
+    return std::to_string(str_a);
+}
+
+std::string convert_to_string(const unsigned char* str);
+
+std::string convert_to_string(const std::string& str);
+
+std::string convert_to_string(unsigned char* str);
+
+std::string convert_to_string(const char* str);
+
+std::string convert_to_string(char char_);
+
+std::string convert_to_string(char* str);
+
+
+
 #endif // CONSOLE_BASE_H

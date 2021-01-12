@@ -31,6 +31,8 @@ int main()
     if(!is_good)
         return -1;
 
+    console_test.bind();
+
     abstractgl::enable_blend();
 
     // start the ft library, extract the font and then pass it to the render context //
@@ -62,7 +64,8 @@ int main()
     console_test.use_render_context(render);
     console_test.set_all_callbacks();
 
-    console_test.print((char*)glGetString(GL_VERSION), console::modifier::perma_mod, 2, COLOR_YELLOW_3P);
+    console_test.print_m(console::modifier::perma_mod, 5, COLOR_YELLOW_3P,
+                glGetString(GL_VERSION), '\n');
 
     glfwSwapInterval(1);
 
@@ -72,8 +75,8 @@ int main()
     {
         ft_timer.start();
 
-        console_test.print(PROMPTING_USER, console::modifier::non_static_mod, 2, 0.5f, 1.0f, 0.1f, false);
-        console_test.print(console_test.active_input + '~', console::modifier::non_static_mod, 2, 1.0, 1.0f, 1.0f);
+        console_test.print_m(console::modifier::non_static_mod, 0, COLOR_RED_3P,
+                PROMPTING_USER, console_test.active_input, '\n');
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); 
@@ -85,8 +88,15 @@ int main()
         /* process events, if any */
         glfwPollEvents();
 
-        ft_timer.end();
+        ft_timer.end(console_test);
     }
 
     return 0;
 }
+
+/* TODO or MAYBE OPTIMIZE
+
+    - any way to put the two for loops into one in 
+    projects/console/source/abstract/external.cpp - font::compute_chars() 
+
+*/

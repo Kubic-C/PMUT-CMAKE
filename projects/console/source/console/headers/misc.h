@@ -58,7 +58,7 @@ namespace console
         void start();
 
         // end timer
-        void end();
+        void end(manager& console_manager);
 
     private:
         long double longest_frametime = 0.0L;

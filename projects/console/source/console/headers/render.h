@@ -28,10 +28,9 @@
 
 #include "base.h"
 
-// I chose 10000 becuase, lets be real here 10000 characters is never going to 
-// be on the screen at once(at least not intentionally), and all modern GPU(2010 and after, in terms of VRAM) are going to
-// be able handle it.
-#define CHARACTER_RENDER_LIMIT 10000
+// the limit for how many characters are going to be on the screen
+// note: increasing or decreasing this number will increase or decrease VRAM usage
+#define CHARACTER_RENDER_LIMIT 5000
 
 namespace console
 {
@@ -47,8 +46,7 @@ namespace console
     struct meta_str
     {
         modifier str_modifier = modifier::non_static_mod; // string modifier
-        std::string str = "";           // string
-        bool nextline = true;          //
+        std::string str = "";          // string
         glm::vec3 rgb;                // rgb
         int rp = 0;                  // render piority
     };
@@ -64,9 +62,6 @@ namespace console
     * but with the downside of high
     * VRAM usage, 
     * 
-    * increasing the CHARACTER_RENDER_LIMIT
-    * will also increase the amout of
-    * VRAM usage.
     * 
     */
     class render_context
@@ -114,6 +109,7 @@ namespace console
 
     public: // global vars
         abstractgl::ft::font* text_font; // this is the font that will be used to render
+        int wrapping_x = 0; // wraps to the nextline if x > wrapping_x
 
     private:
         abstractgl::program font_program; // this is shader program that will be responsible for rendering text

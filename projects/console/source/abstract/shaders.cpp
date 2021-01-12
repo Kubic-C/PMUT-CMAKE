@@ -43,14 +43,15 @@ namespace abstractgl
         }
 
         /*
-            this will read through the file given
-            and will on start reading the file if
-            the @ character and the shader name are 
-            on the same line and it will exit going 
-            the file(completly stop reading) if the
-            @ character, the shader name and the word
-            "end"(shader name + " end") are on the same 
-            line(once it gets to it)
+            goes through every line of file
+
+            if the character '@' and the shader_name
+            is present on the same line it will begin
+            reading and adding the file lines to shader_source
+
+            if the character '@', the shader_name, and the word "end"
+            are all on the same line it will stop reading and exit the
+            file
         */
         bool start_reading = false;
         std::string line = "";
@@ -76,6 +77,7 @@ namespace abstractgl
     {
         glShaderSource(id, 1, &c_shader_source, NULL);
         glCompileShader(id);
+        
         int success;
         std::vector<char> info_log(DEFAULT_VBUFFER_SPACE); // reserve space for 1024 characters
         glGetShaderiv(id, GL_COMPILE_STATUS, &success);

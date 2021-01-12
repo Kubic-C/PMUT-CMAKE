@@ -28,7 +28,7 @@ namespace console
         ft_start = std::chrono::high_resolution_clock::now();
     }   
 
-    void timer::end()
+    void timer::end(manager& console_manager)
     {
         ft_end = std::chrono::high_resolution_clock::now();
         frametime = ft_end - ft_start;
@@ -37,13 +37,10 @@ namespace console
         else if(frametime.count() < shortest_frametime)
             shortest_frametime = frametime.count();
 
-        current_manager->print(DISPLAYING_INFO + std::string(" frametime(ft): ") + std::to_string(frametime.count()*1000),
-                        modifier::non_static_mod, 2, COLOR_AQUA_3P);
-
-        current_manager->print(DISPLAYING_INFO + std::string(" shortest ft: ") + std::to_string(shortest_frametime*1000),
-                        modifier::non_static_mod, 2, COLOR_AQUA_3P);
-
-        current_manager->print(DISPLAYING_INFO + std::string(" longest ft: ") + std::to_string(longest_frametime*1000),
-                        modifier::non_static_mod, 2, COLOR_AQUA_3P);
+        console_manager.print_m(modifier::non_static_mod, 2, COLOR_AQUA_3P,
+            DISPLAYING_INFO, " frametime(ft): ", frametime.count()*1000, '\n',
+            DISPLAYING_INFO, " shortest ft: ", shortest_frametime*1000, '\n',
+            DISPLAYING_INFO, " longest ft: ", longest_frametime*1000, '\n'
+        );
     }
 }

@@ -74,7 +74,7 @@ namespace abstractgl
              std::cout << FT_LIB_STARTUP_GOOD << '\n';
             return true;
         }
-
+        
         void lib_ft::end()
         {
             FT_Done_FreeType(lib);
@@ -126,7 +126,7 @@ namespace abstractgl
             int atlas_width = 0;
             int atlas_height = 0;
 
-            // load first 128 characters of ASCII set
+            // load first 255 characters of ASCII set
             for (int c = 0; c < 256; c++)
             {
                 // load character glyph 
@@ -151,6 +151,7 @@ namespace abstractgl
                 atlas_height,
                 nullptr // notice that were just allocating space here, not filling data 
             );
+
             font_atlas.bind();
             set_default_bitmap_tex_args();
             font_atlas.unbind();

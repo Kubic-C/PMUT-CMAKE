@@ -88,22 +88,34 @@ namespace console
 
         // add to string buffer
         void print(std::string text, modifier modifier_, int rp, 
-                float r, float g, float b, bool nextline = true);
+                float r, float g, float b);
 
         // print freely wherever on the string
         void free_print(std::string text, 
                 float r, float g, float b, float x, float y);
 
-        // remove everything, execept perma string
+        // print multiple
+        template<typename ... text_p>
+        void print_m(modifier modifier_, int rp, float r, float g, float b, const text_p& ... text_a)
+        {
+            std::string text = "";
+            ((text += convert_to_string(text_a)), ...);
+            print(text, modifier_, rp, r, g, b);
+        }
+
+        // remove everything, execept perma strings
         void clear_output_buffer();
 
     public: // settings - methods
-        // set the rendering context, use std::move
+        // set the rendering context
         void use_render_context(render_context& render_context);
 
         // set the current font, font is fully expected to be computed
         void use_font(abstractgl::ft::font& font);
     
+        // binds the manager, in order to use managers call this
+        void bind();
+
     public: // callbacks - methods
         // set all callbacks, only do this when render_context is set
         void set_all_callbacks();
@@ -121,21 +133,26 @@ namespace console
         // the size of the window in pixels, which glViewport needs
         static void framebuffer_callback(GLFWwindow* window, int width, int height);
 
-    public: // members
+    public:
         // output
-        render_context* render; // renderer
-        std::vector<meta_str> meta_str_buffer; // output meta str buffer
-        GLFWwindow* window; // window  
-        int width, height; // width and height of the window
+        GLFWwindow* window;
 
         // input
         std::string active_input; // active input buffer.
         std::vector<std::string> last_input; // all inputs previous to the active input.
+
+        static manager* manager_s; // allows static function to interact with the current manager
+        
+    protected: // members
+        // output
+        render_context* render; // renderer
+        std::vector<meta_str> meta_str_buffer; // output meta str buffer
+        int width, height; // width and height of the window
+
+        // input
         uint32_t last_input_index; // allows the user to cylce to previous indexes
 
     };
-
-    extern manager* current_manager;
 }
 
 #endif // CONSOLE_MANAGER_H

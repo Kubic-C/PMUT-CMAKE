@@ -43,17 +43,20 @@ namespace console
         : window(nullptr), width(width), height(height)
     {
         std::string gl_str; 
-        window = abstractgl::startup(abstractgl::window_data("hello world", width, height), gl_str, OGL_VERSION);
+        window = abstractgl::startup(
+            abstractgl::window_data(name, width, height), gl_str, OGL_VERSION);
 
         good = window;
         if(!good)
         {
-            std::cout << gl_str << "\ninsure that gpu drivers have OpenGL version: " << STR_OGL_VERSION << '\n';
+            std::cout << gl_str 
+                      << "\ninsure that gpu drivers have OpenGL version: " << STR_OGL_VERSION << '\n';
             return;
         }
-
-        current_manager = this;
     }
+
+    // definition of static varible
+    manager* manager::manager_s = nullptr;
 
     manager::~manager()
     {
@@ -74,6 +77,8 @@ namespace console
         render->parse_meta_str_vector(
              meta_str_buffer);
 
+        render->wrapping_x = width;
+
         // print everything in the buffer
         render->full_bind();
         render->print_poll();
@@ -83,9 +88,9 @@ namespace console
                  &remove_if_non_static), meta_str_buffer.end());
     }
 
-    void manager::print(std::string text, modifier modifier_, int rp, float r, float g, float b, bool nextline)
+    void manager::print(std::string text, modifier modifier_, int rp, float r, float g, float b)
     {
-        meta_str_buffer.push_back((meta_str){modifier_, text, nextline, glm::ivec3(r, g, b), rp});
+        meta_str_buffer.push_back((meta_str){modifier_, text, glm::ivec3(r, g, b), rp});
     }
 
     void manager::free_print(std::string text, float r, float g, float b, float x, float y)
@@ -113,6 +118,11 @@ namespace console
         render->use_font(font);
     }
 
+    void manager::bind()
+    {
+        manager_s = this;
+    }
+
     void manager::set_all_callbacks()
     {
         // credits to https://stackoverflow.com/a/59428098
@@ -127,9 +137,9 @@ namespace console
 
     void manager::window_size_callback(GLFWwindow* window, int width, int height)
     {
-       current_manager->render->set_start(0, height);
-       current_manager->render->set_projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height)));
-       current_manager->width = width, current_manager->height = height;
+       manager_s->render->set_start(0, height);
+       manager_s->render->set_projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height)));
+       manager_s->width = width, manager_s->height = height;
     }
 
     void manager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -139,64 +149,64 @@ namespace console
         {
             case GLFW_KEY_F1: // clear static strings
                 if(action == GLFW_PRESS)
-                    current_manager->clear_output_buffer();
+                    manager_s->clear_output_buffer();
                 break;
 
             case GLFW_KEY_F2:
                 if(action == GLFW_PRESS || action == GLFW_REPEAT)
-                     current_manager->print("static string mod test", console::modifier::static_mod, 0, 0.5f, 0.0f, 1.0f);
+                     manager_s->print("static string mod test", console::modifier::static_mod, 0, 0.5f, 0.0f, 1.0f);
                 break;
 
             case GLFW_KEY_V: // get the clipboard
                 if(last_key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT))
                 {
-                    current_manager->active_input.append(glfwGetClipboardString(window));
+                    manager_s->active_input.append(glfwGetClipboardString(window));
                 }
                 return;
 
             case GLFW_KEY_C: // set the clipboard
                 if(last_key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT))
                     glfwSetClipboardString(window, 
-                            current_manager->active_input.c_str());
+                            manager_s->active_input.c_str());
                 return;
 
             case GLFW_KEY_ENTER: // submit input
-                if(current_manager->active_input.find_first_not_of(' ') 
+                if(manager_s->active_input.find_first_not_of(' ') 
                         == std::string::npos && action != GLFW_PRESS)
                     break;
-                current_manager->print(current_manager->active_input, console::modifier::static_mod, 0, 0.5f, 0.0f, 1.0f);
-                current_manager->last_input.push_back(current_manager->active_input);
-                current_manager->active_input.clear();
-                current_manager->last_input_index = current_manager->last_input.size()-1;
+                manager_s->print(manager_s->active_input + '\n', console::modifier::static_mod, -1, 0.5f, 0.0f, 1.0f);
+                manager_s->last_input.push_back(manager_s->active_input);
+                manager_s->active_input.clear();
+                manager_s->last_input_index = manager_s->last_input.size()-1;
                 break;
 
             case GLFW_KEY_BACKSPACE: // pop back last character in active_input
-                if(!current_manager->active_input.empty() && (action == GLFW_PRESS || action == GLFW_REPEAT))
-                    current_manager->active_input.pop_back();
+                if(!manager_s->active_input.empty() && (action == GLFW_PRESS || action == GLFW_REPEAT))
+                    manager_s->active_input.pop_back();
                 break;
 
             case GLFW_KEY_DOWN: // cycle through last inputs
-                if(action == GLFW_PRESS && !current_manager->last_input.empty())
-                    if(current_manager->last_input_index + 1 < current_manager->last_input.size())
+                if(action == GLFW_PRESS && !manager_s->last_input.empty())
+                    if(manager_s->last_input_index + 1 < manager_s->last_input.size())
                     {
-                        current_manager->last_input_index++;
+                        manager_s->last_input_index++;
 
-                        current_manager->copy_last_input_to_active_buffer();
+                        manager_s->copy_last_input_to_active_buffer();
                     }
                 break;
 
             case GLFW_KEY_UP: // cycle through last inputs
-                if(action == GLFW_PRESS  && !current_manager->last_input.empty())
+                if(action == GLFW_PRESS  && !manager_s->last_input.empty())
                 {
-                    if(current_manager->last_input_index - 1 >= 0)
+                    if(manager_s->last_input_index - 1 >= 0)
                     {
-                        current_manager->last_input_index--;
+                        manager_s->last_input_index--;
 
-                        current_manager->copy_last_input_to_active_buffer();
+                        manager_s->copy_last_input_to_active_buffer();
                     }
-                    else if(current_manager->last_input_index == current_manager->last_input.size()-1)
+                    else if(manager_s->last_input_index == manager_s->last_input.size()-1)
                     {
-                       current_manager->copy_last_input_to_active_buffer();
+                       manager_s->copy_last_input_to_active_buffer();
                     }
                 }
                 break;
@@ -210,7 +220,7 @@ namespace console
 
     void manager::character_callback(GLFWwindow* window, unsigned int codepoint)
     {
-        current_manager->active_input += (char)codepoint;
+        manager_s->active_input += (char)codepoint;
     }
 
     void manager::framebuffer_callback(GLFWwindow* window, int width, int height)

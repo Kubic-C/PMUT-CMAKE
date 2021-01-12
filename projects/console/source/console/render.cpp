@@ -69,6 +69,9 @@ namespace console
         {
             switch(c) { case '\n': nextline(pos.x, x, pos.y); continue; }
 
+            if(x > wrapping_x)
+                nextline(pos.x, x, pos.y);
+
             abstractgl::ft::character& ch = text_font->char_set[c];
 
             float x2 = x + ch.bearing.x * scale;
@@ -101,13 +104,16 @@ namespace console
             for(auto c : mstr.str)
             {
                 switch(c) { case '\n': nextline(print_x, x, y); continue; }
-
+                
                 abstractgl::ft::character& ch = text_font->char_set[c];
 
+                if(x + ch.bearing.x + ch.size.x > wrapping_x)
+                    nextline(print_x, x, y);  
+
                 float x2 = x + ch.bearing.x;
-                float y2 = y - ch.bearingy_minus_sizey;
                 float w = ch.size.x;
-                float h = ch.size.y;    
+                float y2 = y - ch.bearingy_minus_sizey;
+                float h = ch.size.y;  
 
                 float x_width = x2 + w, y_height = y2 + h;
                 std::vector<float> tquad = // this will calculate the final vertex for the character
@@ -123,15 +129,6 @@ namespace console
                 n_of_char++;
 
                 x += ch.advance;
-            }
-            switch(mstr.nextline)
-            {
-                case false:
-                    continue;
-
-                case true:
-                    nextline(print_x, x, y);
-                    break;
             }
         }
     }

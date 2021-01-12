@@ -21,10 +21,10 @@
 */
 
 /*
-    math.h deals with vector math and other related
-    graphics math. I am not including GLM 
-    since the math that this projects requires is not
-    much
+    external.h abstracts freetype, and other
+    external sources into a class, or into
+    functions to stop code from repeating
+    it self
 */
 
 #ifndef ABSTRACT_EXTERNAL_H
@@ -44,10 +44,6 @@ namespace abstractgl
     // freetype
     namespace ft 
     {
-        /* FT How to
-            text rendering done - bad
-        */
-
         struct character 
         {
             std::vector<float> tex_coords; // texture coords of the character on the font atlas, use indicies
@@ -104,7 +100,7 @@ namespace abstractgl
             void end();
 
         public:
-            std::map<char, character> char_set; // all characters
+            std::unordered_map<char, character> char_set; // all characters
             texture font_atlas; // all textures
             int highest_glpyh_size = 0; // height of the highest glyph 
             int widest_glyph_size = 0; // widest glyph size

@@ -24,3 +24,33 @@
 namespace console
 {
 }
+
+std::string convert_to_string(const std::string& str)
+{
+    return str;
+}
+
+std::string convert_to_string(const char* str)
+{
+    return std::string(str);
+}
+
+std::string convert_to_string(char* str)
+{
+    return std::string(str);
+}
+
+std::string convert_to_string(const unsigned char* str)
+{
+    return std::string((const char*)str);
+}
+
+std::string convert_to_string(unsigned char* str)
+{
+    return std::string((char*)str);
+}
+
+std::string convert_to_string(char char_)
+{
+    return std::string() += char_;
+}
