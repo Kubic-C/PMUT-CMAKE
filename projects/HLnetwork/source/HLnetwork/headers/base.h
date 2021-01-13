@@ -22,7 +22,7 @@
 #ifndef NETWORK_BASE_H
 #define NETWORK_BASE_H
 
-#include <iostream>
+#include "base/headers/console_data.h"
 #include <asio.hpp>
 
 namespace hlnet

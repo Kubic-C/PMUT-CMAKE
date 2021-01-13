@@ -122,22 +122,6 @@ namespace console
     {
         manager_s = this;
     }
-    
-    void manager::display_error()
-    {
-        int error = glGetError();
-        switch(error)
-        {
-            case 0: 
-                break;
-
-            default:
-                clear_output_buffer();
-                print_m(modifier::static_mod, 1, 1.0f, 0.0f, 0.0f, 
-                    "{PMUT}", " Opengl error occurred: ", error, '\n');
-                break;
-        }        
-    }
 
     void manager::set_all_callbacks()
     {
@@ -149,6 +133,9 @@ namespace console
         glfwSetWindowSizeCallback(window, window_size_callback);
         glfwSetCharCallback(window, character_callback);
         glfwSetKeyCallback(window, key_callback);
+
+        glEnable              ( GL_DEBUG_OUTPUT );
+        glDebugMessageCallback( message_callback, 0 );
     }
 
     void manager::window_size_callback(GLFWwindow* window, int width, int height)
@@ -190,7 +177,7 @@ namespace console
                 if(manager_s->active_input.find_first_not_of(' ') 
                         == std::string::npos && action != GLFW_PRESS)
                     break;
-                manager_s->print(manager_s->active_input + '\n', console::modifier::static_mod, -1, 0.5f, 0.0f, 1.0f);
+                manager_s->print(manager_s->active_input + '\n', console::modifier::static_mod, -1, 1.0f, 1.0f, 1.0f);
                 manager_s->last_input.push_back(manager_s->active_input);
                 manager_s->active_input.clear();
                 manager_s->last_input_index = manager_s->last_input.size()-1;
@@ -242,5 +229,27 @@ namespace console
     void manager::framebuffer_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
+    }
+
+    void manager::message_callback(
+                GLenum source,
+                GLenum type,
+                GLuint id,
+                GLenum severity,
+                GLsizei length,
+                const GLchar* message,
+                const void* userParam 
+    )
+    {
+        if(type == GL_DEBUG_TYPE_ERROR)
+        {
+            std::string error = 
+                "{PMUT} Opengl error occured:\n" +
+                convert_to_string(message) + '\n';
+
+            manager_s->clear_output_buffer();
+            manager_s->print(error, modifier::static_mod, 1, 1.0f, 0.0f, 0.0f);
+            std::cout << error;
+        }
     }
 }

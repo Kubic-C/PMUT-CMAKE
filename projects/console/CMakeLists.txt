@@ -21,10 +21,6 @@
 # console deals with input and output
 # this console is made with GLFW & GLEW (OpenGL)
 
-
-#dir to console ------
-set(console_dir "source/console")
-
 file(GLOB_RECURSE SOURCES
     source/abstract/headers/*.h
     source/abstract/*.cpp

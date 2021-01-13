@@ -40,9 +40,24 @@
 #define COLOR_WHITE_3P    1.0f, 1.0f, 1.0f
 #define COLOR_GREEN_3P    0.0f, 1.0f, 0.0f
 #define COLOR_YELLOW_3P   1.0f, 1.0f, 0.0f
+#define COLOR_PURPLE_3P   1.0f, 0.0f, 1.0f
 
 namespace pmut
 {
+    namespace flags
+    {
+        extern bool exit_app;
+    }
+
+    namespace data
+    {
+        extern console::render_context* renderer;
+        extern abstractgl::program font_program;
+        extern console::manager* console;
+        extern abstractgl::ft::font font;
+        extern int exit_code;
+    }
+
     /*  timer class
      * this will count the
      * time between start()
@@ -57,7 +72,7 @@ namespace pmut
         void start();
 
         // end timer
-        void end(console::manager& console_manager);
+        void end();
 
         // restart
         void restart();

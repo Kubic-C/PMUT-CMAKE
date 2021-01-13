@@ -72,7 +72,7 @@ namespace pmut
 
         data::console->bind();
 
-        load_font(dir_to_font, 60);
+        load_font(dir_to_font, 20);
         if(flags::exit_app)
             return;
 
@@ -88,8 +88,17 @@ namespace pmut
         abstractgl::enable_blend();
     }
 
-    int app_loop()
+    void cleanup()
     {
+        delete data::renderer;
+        delete data::console;
+    }
+
+    int app()
+    {
+        data::console->print_m(console::modifier::perma_mod, 5, COLOR_PURPLE_3P,
+                PMUT_NAME, '\n');
+
         data::console->print_m(console::modifier::perma_mod, 5, COLOR_YELLOW_3P,
                 glGetString(GL_VERSION), '\n');
 
@@ -100,11 +109,9 @@ namespace pmut
             loop_timer.start();
             glClear(GL_COLOR_BUFFER_BIT); 
 
-            data::console->display_error();
-
             data::console->print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
 
-            data::console->print_m(console::modifier::non_static_mod, 0, COLOR_RED_3P,
+            data::console->print_m(console::modifier::non_static_mod, 0, COLOR_WHITE_3P,
                 data::console->active_input + '_', '\n');
 
             if(glfwGetKey(data::console->window, GLFW_KEY_F3) == GLFW_PRESS)
@@ -115,9 +122,11 @@ namespace pmut
             glfwSwapBuffers(data::console->window);
 
             glfwPollEvents();
-            loop_timer.end(*data::console);
+            loop_timer.end();
         }
-        
+
+        cleanup();
+
         std::cout << "exiting with code: " << data::exit_code << '\n';
         return data::exit_code;
     }

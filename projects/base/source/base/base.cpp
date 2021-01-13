@@ -19,25 +19,4 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "headers/app.h"
-
-int main()
-{
-    pmut::startup(
-        PMUT_NAME,
-        1000, 1000,
-        "./misc/fonts/__font.ttf",
-        "./misc/shaders/font.glsl",
-        "vertex",
-        "fragment"
-    );
-
-    return pmut::app();
-}
-
-/* TODO or OPTIMIZE
-
-    - any way to put the two for loops into one in 
-    projects/console/source/abstract/external.cpp - font::compute_chars() 
-
-*/
+#include "headers/base.h"

@@ -33,8 +33,8 @@
 
 #include "render.h"
 
-#define OGL_VERSION 4, 0
-#define STR_OGL_VERSION "4.0"
+#define OGL_VERSION 4, 3
+#define STR_OGL_VERSION "4.3"
 
 namespace console
 {
@@ -103,9 +103,6 @@ namespace console
             print(text, modifier_, rp, r, g, b);
         }
 
-        // display if an error
-        void display_error();
-
         // remove everything, execept perma strings
         void clear_output_buffer();
 
@@ -135,6 +132,17 @@ namespace console
         // frame buffer callback, this is used because not all systems return 
         // the size of the window in pixels, which glViewport needs
         static void framebuffer_callback(GLFWwindow* window, int width, int height);
+
+        // message callback
+        static void message_callback(
+                GLenum source,
+                GLenum type,
+                GLuint id,
+                GLenum severity,
+                GLsizei length,
+                const GLchar* message,
+                const void* userParam 
+        );
 
     public:
         // output

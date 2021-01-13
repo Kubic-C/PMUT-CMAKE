@@ -37,5 +37,6 @@ add_subdirectory(depend/stbi_image)
 
 #INTERNAL
 add_subdirectory(projects/console)
+add_subdirectory(projects/base)
 add_subdirectory(projects/HLnetwork)
 add_subdirectory(projects/pmut)

@@ -19,54 +19,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef COMMANDS_H
+#define COMMANDS_H
+
+
 /*
-    app.h defines a main loop for pmut to run in.
+    base project defines global data along with
+    commands. it allows projects to add their own
+    commands and print out to the console screen with
+    only one manager.
 */
 
-#ifndef PMUT_APP_H
-#define PMUT_APP_H
-
-#include "base.h"
+#include "console/headers/include.h"
 
 namespace pmut
 {
-    namespace flags
-    {
-        extern bool exit_app;
-    }
-
-    // global data
     namespace data
     {
-        extern console::render_context* renderer;
-        extern abstractgl::program font_program;
-        extern abstractgl::ft::font font;
-        extern console::manager* console;
-        extern int exit_code;
+
     }
-
-    // load a font
-    void load_font(stringref dir_to_font, int size);
-
-    // exit pmut
-    void exit_app(int exit_code);
-
-    // startup pmut
-    void startup(
-        stringref name, 
-        int width,
-        int height, 
-        stringref dir_to_font, 
-        stringref dir_to_shaders, 
-        stringref vertex_name, 
-        stringref fragment_name
-    );
-
-    // cleanup pmut
-    void cleanup();
-
-    //  app_loop() defines a loop
-    int app();
 }
 
-#endif // PMUT_APP_H
+#endif // COMMANDS_H

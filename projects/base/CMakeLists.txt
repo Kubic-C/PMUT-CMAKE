@@ -18,17 +18,17 @@
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-file(GLOB_RECURSE SOURCES_PMUT
-    source/headers/*.h
-    source/*.cpp
+file(GLOB_RECURSE SOURCES_COMMANDS
+    source/base/headers/*.h
+    source/base/*.cpp
 )
 
-add_executable(pmut ${SOURCES_PMUT})
+add_library(
+    base
+    ${SOURCES_COMMANDS}
+)
 
-#EXTERNAL
+target_link_libraries(base PUBLIC console)
 
-#INTERNAL
-target_link_libraries(pmut PRIVATE hlnetwork)
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+# makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
+target_include_directories(base PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")

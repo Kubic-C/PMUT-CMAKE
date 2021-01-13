@@ -19,11 +19,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "headers/app.h"
+#include "headers/console_data.h"
 
 namespace pmut
 {
-
     namespace flags
     {
         bool exit_app = false;
@@ -37,5 +36,4 @@ namespace pmut
         abstractgl::ft::font font;
         int exit_code = 0;
     }
-
 }

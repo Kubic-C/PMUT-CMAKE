@@ -28,10 +28,13 @@
 #ifndef PMUT_BASE_H
 #define PMUT_BASE_H
 
-#include "console/headers/include.h"
+//#include "console/headers/include.h"
 #include "HLnetwork/headers/base.h"
 
 typedef const std::string& stringref;
+
+#define PMUT_NAME "PMUT(Porter Multi Use Terminal) | Build(" +  std::string("date: ") + std::string(__DATE__) +  \
+ ", time: " + std::string(__TIME__) + ") | Copyright(c) Sawyer Porter"
 
 namespace pmut
 {

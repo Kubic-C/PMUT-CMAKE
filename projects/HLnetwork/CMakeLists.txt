@@ -18,27 +18,21 @@
 
 # high level networking using asio standalone
 
-#dir to network
-set(network_dir "source/HLnetwork")
-
-#all headers(.h) in the console dir
-set(console_headers 
-"${network_dir}/headers/base.h"
-)
-
-#all source(.cpp) files in the console dir
-set(console_sources 
-"${network_dir}/base.cpp"
+file(GLOB_RECURSE SOURCES_HLNETWORK
+    source/HLnetwork/headers/*.h
+    source/HLnetwork/*.cpp
 )
 
 add_library(
     hlnetwork
-    ${console_headers}
-    ${console_sources}
+    ${SOURCES_HLNETWORK}
 )
 
 #EXTERNAL 
 target_link_libraries(hlnetwork PUBLIC lib-asio)
+
+#INTERAL
+target_link_libraries(hlnetwork PUBLIC base)
 
 # makes this possible: #include "exmaple.h", instead of doing #include "../../../console/source/headers/exmaple.h"
 target_include_directories(hlnetwork PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/source")
