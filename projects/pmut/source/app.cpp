@@ -109,10 +109,12 @@ namespace pmut
             loop_timer.start();
             glClear(GL_COLOR_BUFFER_BIT); 
 
+            data::console->free_print("This is", 1.0f, 0.0f, 0.0f, 500.0f, 500.0f, 1.0f);
+
             data::console->print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
 
             data::console->print_m(console::modifier::non_static_mod, 0, COLOR_WHITE_3P,
-                data::console->active_input + '_', '\n');
+                data::console->get_input() + '_', '\n');
 
             if(glfwGetKey(data::console->window, GLFW_KEY_F3) == GLFW_PRESS)
                 loop_timer.restart();

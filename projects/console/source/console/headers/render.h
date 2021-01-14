@@ -30,14 +30,14 @@
 
 // the limit for how many characters are going to be on the screen
 // note: increasing or decreasing this number will increase or decrease VRAM usage
-#define CHARACTER_RENDER_LIMIT 1000
+#define CHARACTER_RENDER_LIMIT 10000
 
 namespace console
 {
     // used later in manager.h
     enum class modifier
     {
-        non_static_mod,
+        non_static_mod, // NON STATIC MOD IS NOT THREAD SAFE
         static_mod,
         perma_mod,
     };
@@ -89,7 +89,7 @@ namespace console
         /// draws everything in the output_buffer, then clearing it. when printing always call full_bind() before
         void print_poll();
 
-        // this will parse the output buffer. whist also updating memory in VRAM
+        // this will parse the vector, transforming it into something opengl can understand
         void parse_output(std::vector<float>& vector, glm::vec2 pos, glm::vec3 color, float scale, std::string text);
 
         // this will parse a meta_str vector

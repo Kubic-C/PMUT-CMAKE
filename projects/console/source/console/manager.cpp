@@ -65,11 +65,22 @@ namespace console
 
     void manager::copy_last_input_to_active_buffer()
     {
+        mtx.lock();
         active_input = last_input[last_input_index];
+        mtx.unlock();
+    }
+
+    std::string manager::get_input()
+    {
+        std::lock_guard<std::mutex> mtx_(mtx);
+        return active_input;
     }
 
     void manager::poll()
     {
+        mtx.lock();
+        handle_error();
+
         // sort the vector into de-ascending order based into render piority
         std::stable_sort(meta_str_buffer.begin(), meta_str_buffer.end(), &highest_rp);
 
@@ -86,18 +97,23 @@ namespace console
 
         meta_str_buffer.erase(std::remove_if(meta_str_buffer.begin(), meta_str_buffer.end(),
                  &remove_if_non_static), meta_str_buffer.end());
+        mtx.unlock();
     }
 
     void manager::print(std::string text, modifier modifier_, int rp, float r, float g, float b)
     {
+        mtx.lock();
         meta_str_buffer.push_back((meta_str){modifier_, text, glm::ivec3(r, g, b), rp});
+        mtx.unlock();
     }
 
-    void manager::free_print(std::string text, float r, float g, float b, float x, float y)
+    void manager::free_print(std::string text, float r, float g, float b, float x, float y, float scale)
     {
+        mtx.lock();
         render->full_bind();
-        render->free_print(text, glm::vec2(x, y), glm::vec3(r, g, b), 1.0f);
+        render->free_print(text, glm::vec2(x, y), glm::vec3(r, g, b), scale);
         render->full_unbind();
+        mtx.unlock();
     }
 
     void manager::clear_output_buffer()
@@ -108,23 +124,37 @@ namespace console
 
     void manager::use_render_context(render_context& render_context_p)
     {
+        mtx.lock();
         render = &render_context_p;
         // call this to setup projection uniform and render print poll start
         window_size_callback(window, width, height);
+        mtx.unlock();
     }
 
     void manager::use_font(abstractgl::ft::font& font)
     {
+        mtx.lock();
         render->use_font(font);
+        mtx.unlock();
     }
 
     void manager::bind()
     {
+        mtx.lock();
         manager_s = this;
+        mtx.unlock();
+    }
+
+    void manager::handle_error()
+    {
+        // GL_INVALID_ERROR, usally comes from not enough space allocated
+        if(glGetError() == GL_INVALID_VALUE)
+            clear_output_buffer();
     }
 
     void manager::set_all_callbacks()
     {
+        mtx.lock();
         // credits to https://stackoverflow.com/a/59428098
         glfwSetWindowSizeLimits(window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
@@ -136,17 +166,21 @@ namespace console
 
         glEnable              ( GL_DEBUG_OUTPUT );
         glDebugMessageCallback( message_callback, 0 );
+        mtx.unlock();
     }
 
     void manager::window_size_callback(GLFWwindow* window, int width, int height)
     {
+       //manager_s->mtx.lock();
        manager_s->render->set_start(0, height);
        manager_s->render->set_projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height)));
        manager_s->width = width, manager_s->height = height;
+       //manager_s->mtx.unlock();
     }
 
     void manager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
+        //manager_s->mtx.lock();
         static short int last_key;
         switch(key)
         {
@@ -157,27 +191,42 @@ namespace console
 
             case GLFW_KEY_F2:
                 if(action == GLFW_PRESS || action == GLFW_REPEAT)
-                     manager_s->print("static string mod test\n", console::modifier::static_mod, -1, 0.5f, 0.0f, 1.0f);
+                    manager_s->print("static string mod test\n", console::modifier::static_mod, -1, 0.5f, 0.0f, 1.0f);
                 break;
 
             case GLFW_KEY_V: // get the clipboard
                 if(last_key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT))
                 {
-                    manager_s->active_input.append(glfwGetClipboardString(window));
+                    // users may try to paste images or some unsupported formate
+                    // so this is here to stop seg faults from crashing the app/program
+                    // this try-catch block is not full-proof
+                    try
+                    {
+                        std::string buf = glfwGetClipboardString(window);
+                        manager_s->active_input += buf;
+                    }
+                    catch(std::exception& e)
+                    {
+                        manager_s->print_m(console::modifier::static_mod, -1, 1.0f, 0.0f, 0.0f,
+                            "user attempted to paste an invalid string to the active input buffer\n",
+                            e.what(), '\n');
+                    }
                 }
+                manager_s->mtx.unlock();
                 return;
 
             case GLFW_KEY_C: // set the clipboard
                 if(last_key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT))
                     glfwSetClipboardString(window, 
                             manager_s->active_input.c_str());
+
+                manager_s->mtx.unlock();
                 return;
 
             case GLFW_KEY_ENTER: // submit input
                 if(manager_s->active_input.find_first_not_of(' ') 
                         == std::string::npos && action != GLFW_PRESS)
                     break;
-                manager_s->print(manager_s->active_input + '\n', console::modifier::static_mod, -1, 1.0f, 1.0f, 1.0f);
                 manager_s->last_input.push_back(manager_s->active_input);
                 manager_s->active_input.clear();
                 manager_s->last_input_index = manager_s->last_input.size()-1;
@@ -188,47 +237,26 @@ namespace console
                     manager_s->active_input.pop_back();
                 break;
 
-            case GLFW_KEY_DOWN: // cycle through last inputs
-                if(action == GLFW_PRESS && !manager_s->last_input.empty())
-                    if(manager_s->last_input_index + 1 < manager_s->last_input.size())
-                    {
-                        manager_s->last_input_index++;
-
-                        manager_s->copy_last_input_to_active_buffer();
-                    }
-                break;
-
-            case GLFW_KEY_UP: // cycle through last inputs
-                if(action == GLFW_PRESS  && !manager_s->last_input.empty())
-                {
-                    if(manager_s->last_input_index - 1 >= 0)
-                    {
-                        manager_s->last_input_index--;
-
-                        manager_s->copy_last_input_to_active_buffer();
-                    }
-                    else if(manager_s->last_input_index == manager_s->last_input.size()-1)
-                    {
-                       manager_s->copy_last_input_to_active_buffer();
-                    }
-                }
-                break;
-
             default:
                 break;
         }
-        
         last_key = key;
+
+        //manager_s->mtx.unlock();
     }
 
     void manager::character_callback(GLFWwindow* window, unsigned int codepoint)
     {
+        //manager_s->mtx.lock();
         manager_s->active_input += (char)codepoint;
+        //manager_s->mtx.unlock();
     }
 
     void manager::framebuffer_callback(GLFWwindow* window, int width, int height)
     {
+       // manager_s->mtx.lock();
         glViewport(0, 0, width, height);
+       // manager_s->mtx.unlock();
     }
 
     void manager::message_callback(
@@ -241,15 +269,8 @@ namespace console
                 const void* userParam 
     )
     {
-        if(type == GL_DEBUG_TYPE_ERROR)
-        {
-            std::string error = 
-                "{PMUT} Opengl error occured:\n" +
-                convert_to_string(message) + '\n';
-
-            manager_s->clear_output_buffer();
-            manager_s->print(error, modifier::static_mod, 1, 1.0f, 0.0f, 0.0f);
-            std::cout << error;
-        }
+        //manager_s->mtx.lock();
+        std::cout << type << '\n' << id << '\n' << severity << '\n' << message << '\n';
+        //manager_s->mtx.unlock();
     }
 }

@@ -30,8 +30,8 @@ namespace console
         // it in total is ~2.88 megabytes, and all modern GPUs can handle that
 
 
-        // 6 triangles, vec2 position, vec2 tex_coords, vec3 rgb
-        size_t size_of_vbo = (sizeof(float)*4*2*2*3)*CHARACTER_RENDER_LIMIT;
+        // 4 triangles, vec2 position, vec2 tex_coords, vec3 rgb
+        size_t size_of_vbo = (sizeof(float)*28)*CHARACTER_RENDER_LIMIT;
         font_vbo.buffer_data(size_of_vbo, nullptr, GL_DYNAMIC_DRAW);
         font_vbo.bind();
         int stride = sizeof(float)*(2+2+3);
@@ -68,9 +68,6 @@ namespace console
         for(auto c : text)
         {
             switch(c) { case '\n': nextline(pos.x, x, pos.y); continue; }
-
-            if(x > wrapping_x)
-                nextline(pos.x, x, pos.y);
 
             abstractgl::ft::character& ch = text_font->char_set[c];
 

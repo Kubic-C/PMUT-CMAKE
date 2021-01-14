@@ -33,6 +33,8 @@
 
 #include "render.h"
 
+#include <mutex>
+
 #define OGL_VERSION 4, 3
 #define STR_OGL_VERSION "4.3"
 
@@ -48,11 +50,12 @@ namespace console
     bool remove_if_not_perma(meta_str meta_str);
 
     /* manager class
-     *
      * 
      * the manager class when initliazed
      * WILL start opengl and create a window
      * with the paremeters given to the contructor
+     * 
+     * thread-safe impl
      * 
      * the manager class handles strings in a specific
      * way. there are types of string modifiers that will modify
@@ -82,6 +85,8 @@ namespace console
     public: // input - methods
         void copy_last_input_to_active_buffer();        
 
+        std::string get_input();
+
     public: // output - methods
         // call render.poll(), and sorts meta_str
         void poll();
@@ -92,7 +97,7 @@ namespace console
 
         // print freely wherever on the string
         void free_print(std::string text, 
-                float r, float g, float b, float x, float y);
+                float r, float g, float b, float x, float y, float scale);
 
         // print multiple
         template<typename ... text_p>
@@ -113,6 +118,9 @@ namespace console
         // set the current font, font is fully expected to be computed
         void use_font(abstractgl::ft::font& font);
     
+        // error handling; correct the error
+        void handle_error();
+
         // binds the manager, in order to use managers call this
         void bind();
 
@@ -152,6 +160,7 @@ namespace console
         std::string active_input; // active input buffer.
         std::vector<std::string> last_input; // all inputs previous to the active input.
 
+        std::mutex mtx; // allows thread safe
         static manager* manager_s; // allows static function to interact with the current manager
 
     protected: // members
@@ -161,7 +170,7 @@ namespace console
         int width, height; // width and height of the window
 
         // input
-        uint32_t last_input_index; // allows the user to cylce to previous indexes
+        int last_input_index; // allows the user to cylce to previous indexes
 
     };
 }

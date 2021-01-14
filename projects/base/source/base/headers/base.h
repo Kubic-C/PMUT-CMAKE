@@ -19,25 +19,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef COMMANDS_H
-#define COMMANDS_H
-
-
 /*
-    base project defines global data along with
-    commands. it allows projects to add their own
-    commands and print out to the console screen with
-    only one manager.
+    base project holds global/cross-project varibles such as the
+    console manager, general app data, and flags. .
 */
+
+#ifndef BASE_BASE_H
+#define BASE_BASE_H
+
+
 
 #include "console/headers/include.h"
 
 namespace pmut
 {
-    namespace data
-    {
-
-    }
 }
 
-#endif // COMMANDS_H
+#endif // BASE_BASE_H

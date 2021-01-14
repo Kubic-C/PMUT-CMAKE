@@ -26,7 +26,7 @@
 #ifndef CONSOLE_DATA_H
 #define CONSOLE_DATA_H
 
-#include "base.h"
+#include "flags.h"
 #include <chrono>
 
 #define DISPLAYING_INFO "{PMUT}"
@@ -44,11 +44,6 @@
 
 namespace pmut
 {
-    namespace flags
-    {
-        extern bool exit_app;
-    }
-
     namespace data
     {
         extern console::render_context* renderer;
