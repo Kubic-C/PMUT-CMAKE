@@ -50,7 +50,6 @@ namespace pmut
         extern abstractgl::program font_program;
         extern console::manager* console;
         extern abstractgl::ft::font font;
-        extern int exit_code;
     }
 
     /*  timer class

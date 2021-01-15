@@ -29,6 +29,5 @@ namespace pmut
         abstractgl::program font_program = 0;
         console::manager* console = nullptr;
         abstractgl::ft::font font;
-        int exit_code = 0;
     }
 }

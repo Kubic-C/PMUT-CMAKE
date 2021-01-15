@@ -20,3 +20,11 @@
 */
 
 #include "headers/base.h"
+
+namespace pmut
+{
+    namespace data
+    {
+        int exit_code = 0;
+    }
+}

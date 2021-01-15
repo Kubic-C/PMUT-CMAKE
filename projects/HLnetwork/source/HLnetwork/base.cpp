@@ -27,5 +27,13 @@ namespace hlnet
     {
         std::cout << "Library test - HLnetwork\n";
         asio::io_context asio_test;
+        asio::error_code ec;
+        asio::ip::tcp::endpoint ep(asio::ip::make_address("172.217.2.110", ec), 80);
+        std::cout << ec.message() << '\n';
+
+        asio::ip::tcp::socket hello(asio_test);
+        hello.connect(ep, ec);
+        std::cout << ec.message() << '\n';
+        hello.close();
     }
 }

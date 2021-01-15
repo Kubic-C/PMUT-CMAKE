@@ -33,6 +33,10 @@ typedef const std::string& stringref;
 
 namespace pmut
 {
+    namespace data
+    {
+        extern int exit_code;
+    }
 }
 
 #endif // BASE_BASE_H

@@ -46,8 +46,6 @@ namespace pmut
         extern std::unordered_map<std::string, command> commands;
         extern std::thread* command_thread;
 
-        // this is argument and option data for commands,
-        // this data should not be directly accessed through commands
         namespace cmd_local
         {
             extern std::string name;

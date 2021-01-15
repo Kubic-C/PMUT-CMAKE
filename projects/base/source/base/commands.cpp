@@ -126,7 +126,7 @@ namespace pmut
             return false;
         }
 
-        if(!arg_names.size()) // no opt names or no arg names
+        if(!arg_names.size() && !opt_names.size()) // no opt names or no arg names
             return true;
 
         // arg_names is ALWAYS equal(in size) to arg_datas

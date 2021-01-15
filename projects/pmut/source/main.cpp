@@ -20,7 +20,7 @@
 */
 
 #include "headers/app.h"
-#include <atomic>
+#include <math.h>
 
 int main()
 {

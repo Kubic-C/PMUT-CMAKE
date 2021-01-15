@@ -28,9 +28,14 @@ namespace pmut
         std::vector<std::string> args;
         std::vector<std::string> opts;
 
-        args = {};
-        opts = {};
+        opts = { "c" }, args = {};
         data::commands["exit"] = (command){commands::exit, args, opts};
+
+        opts = {}, args = {};
+        data::commands["clear"] = (command){commands::clear, args, opts};
+
+        opts = {}, args = { "str" };
+        data::commands["echo"] = (command){commands::echo, args, opts};
     }
 
     namespace commands
@@ -38,7 +43,27 @@ namespace pmut
         void exit()
         {
             command_gaurd gaurd;
+            if(data::cmd_local::opts.find("c") != data::cmd_local::opts.end())
+            {
+                try { data::exit_code = std::stoi(data::cmd_local::opts["c"]); } 
+                catch(std::exception& x) { log_err(x.what(), " error", '\n');  return; }
+            }
+
             flags::exit_app = true;
+        }
+
+        void clear()
+        {
+            command_gaurd gaurd;
+            data::console->mtx.lock();
+            data::console->clear_output_buffer();
+            data::console->mtx.unlock();
+        }
+        
+        void echo()
+        {
+            command_gaurd gaurd;
+            data::console->print(data::cmd_local::args["str"] + '\n', console::modifier::static_mod, -1, COLOR_WHITE_3P);         
         }
     }
 }

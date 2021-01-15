@@ -32,7 +32,14 @@ namespace pmut
 {
     namespace commands
     {
+        // exit the console with code n, default for code is 0
         void exit();
+
+        // clear the console
+        void clear();
+
+        // echo to the console
+        void echo();
     }
 
     void add_base_commands();
