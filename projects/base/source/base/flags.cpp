@@ -19,13 +19,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-
 #include "headers/flags.h"
 
 namespace pmut
 {
     namespace flags
     {
-        bool exit_app;
+        std::atomic<bool> join_thread;
+        std::atomic<bool> exit_app;
     }
 }

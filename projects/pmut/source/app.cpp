@@ -86,12 +86,15 @@ namespace pmut
         data::console->set_all_callbacks();
 
         abstractgl::enable_blend();
+        
+        add_base_commands();
     }
 
     void cleanup()
     {
         delete data::renderer;
         delete data::console;
+        wait_for_end_of_command();
     }
 
     int app()
@@ -102,27 +105,30 @@ namespace pmut
         data::console->print_m(console::modifier::perma_mod, 5, COLOR_YELLOW_3P,
                 glGetString(GL_VERSION), '\n');
 
+        data::console->set_enter_callback(call_command);
+
         glfwSwapInterval(1);
         timer loop_timer;
         while(!flags::exit_app && !glfwWindowShouldClose(data::console->window))
         {
             loop_timer.start();
-            glClear(GL_COLOR_BUFFER_BIT); 
 
-            data::console->free_print("This is", 1.0f, 0.0f, 0.0f, 500.0f, 500.0f, 1.0f);
+            // render here
+            glClear(GL_COLOR_BUFFER_BIT); 
 
             data::console->print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
 
             data::console->print_m(console::modifier::non_static_mod, 0, COLOR_WHITE_3P,
                 data::console->get_input() + '_', '\n');
 
-            if(glfwGetKey(data::console->window, GLFW_KEY_F3) == GLFW_PRESS)
-                loop_timer.restart();
-
             data::console->poll();
 
+            end_command();
+
+            // show new renders
             glfwSwapBuffers(data::console->window);
 
+            // events
             glfwPollEvents();
             loop_timer.end();
         }

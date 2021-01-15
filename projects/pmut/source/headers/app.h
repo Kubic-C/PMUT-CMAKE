@@ -27,15 +27,9 @@
 #define PMUT_APP_H
 
 #include "base.h"
-#include <thread>
 
 namespace pmut
 {
-    namespace flags
-    {
-        extern bool exit_app;
-    }
-
     // global data
     namespace data
     {

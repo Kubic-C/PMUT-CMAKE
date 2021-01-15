@@ -20,22 +20,22 @@
 */
 
 /*
- * base.h of pmut includes both console
- * and hlnetwork
- * 
+    command_def.h lists all "base" commands
 */
 
-#ifndef PMUT_BASE_H
-#define PMUT_BASE_H
+#ifndef BASE_COMMAND_DEF_H
+#define BASE_COMMAND_DEF_H
 
-//#include "console/headers/include.h"
-#include "HLnetwork/headers/base.h"
-
-#define PMUT_NAME "PMUT(Porter Multi Use Terminal) | Build(" +  std::string("date: ") + std::string(__DATE__) +  \
- ", time: " + std::string(__TIME__) + ") | Sawyer Porter"
+#include "parser.h"
 
 namespace pmut
 {
+    namespace commands
+    {
+        void exit();
+    }
+
+    void add_base_commands();
 }
 
-#endif // PMUT_BASE_H
+#endif // BASE_COMMAND_DEF_H

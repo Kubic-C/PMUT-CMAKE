@@ -227,6 +227,7 @@ namespace console
                 if(manager_s->active_input.find_first_not_of(' ') 
                         == std::string::npos && action != GLFW_PRESS)
                     break;
+                manager_s->enter_callback(manager_s->active_input);
                 manager_s->last_input.push_back(manager_s->active_input);
                 manager_s->active_input.clear();
                 manager_s->last_input_index = manager_s->last_input.size()-1;
@@ -273,4 +274,10 @@ namespace console
         std::cout << type << '\n' << id << '\n' << severity << '\n' << message << '\n';
         //manager_s->mtx.unlock();
     }
+
+    void manager::set_enter_callback(void(*enter_callback_p)(const std::string& string))
+    {
+        enter_callback = enter_callback_p;
+    }
+
 }

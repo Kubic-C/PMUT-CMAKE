@@ -152,6 +152,8 @@ namespace console
                 const void* userParam 
         );
 
+        void set_enter_callback(void(*enter_callback_p)(const std::string& string));
+
     public:
         // output
         GLFWwindow* window;
@@ -159,7 +161,9 @@ namespace console
         // input
         std::string active_input; // active input buffer.
         std::vector<std::string> last_input; // all inputs previous to the active input.
+        void(*enter_callback)(const std::string& string);
 
+        // other
         std::mutex mtx; // allows thread safe
         static manager* manager_s; // allows static function to interact with the current manager
 

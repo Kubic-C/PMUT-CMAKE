@@ -19,23 +19,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/*
- * base.h of pmut includes both console
- * and hlnetwork
- * 
-*/
-
-#ifndef PMUT_BASE_H
-#define PMUT_BASE_H
-
-//#include "console/headers/include.h"
-#include "HLnetwork/headers/base.h"
-
-#define PMUT_NAME "PMUT(Porter Multi Use Terminal) | Build(" +  std::string("date: ") + std::string(__DATE__) +  \
- ", time: " + std::string(__TIME__) + ") | Sawyer Porter"
+#include "headers/commands.h"
 
 namespace pmut
 {
-}
+    namespace data
+    {
+        std::unordered_map<std::string, command> commands;
+        std::thread* command_thread = nullptr;
 
-#endif // PMUT_BASE_H
+        namespace cmd_local
+        {
+            std::string name = "";
+            std::map<std::string, std::string> args = {};
+            std::map<std::string, std::string> opts = {};
+        }
+    }
+}

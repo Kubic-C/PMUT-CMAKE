@@ -27,9 +27,9 @@
 #ifndef BASE_BASE_H
 #define BASE_BASE_H
 
-
-
 #include "console/headers/include.h"
+
+typedef const std::string& stringref;
 
 namespace pmut
 {

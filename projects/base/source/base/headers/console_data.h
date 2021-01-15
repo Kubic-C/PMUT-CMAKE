@@ -79,6 +79,18 @@ namespace pmut
         std::chrono::time_point<std::chrono::high_resolution_clock> ft_start;
         std::chrono::time_point<std::chrono::high_resolution_clock> ft_end;
     };
+
+    template<typename ... params>
+    void log_err(const params& ... args)
+    {
+        data::console->print_m(console::modifier::static_mod, -1, COLOR_RED_3P, args...);
+    }
+
+    template<typename ... params>
+    void log_data(const params& ... args)
+    {
+        data::console->print_m(console::modifier::static_mod, -1, COLOR_WHITE_3P, args...);
+    }
 }
 
 #endif // CONSOLE_DATA_H

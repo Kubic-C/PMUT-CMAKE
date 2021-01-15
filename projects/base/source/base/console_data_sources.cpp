@@ -23,11 +23,6 @@
 
 namespace pmut
 {
-    namespace flags
-    {
-        bool exit_app = false;
-    }
-
     namespace data
     {
         console::render_context* renderer = nullptr;

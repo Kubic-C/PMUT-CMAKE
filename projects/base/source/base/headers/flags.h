@@ -27,12 +27,14 @@
 #define BASE_FLAGS_H
 
 #include "base.h"
+#include <atomic>
 
 namespace pmut
 {
     namespace flags
     {
-        extern bool exit_app;
+        extern std::atomic<bool> join_thread;
+        extern std::atomic<bool> exit_app;
     }
 }
 
