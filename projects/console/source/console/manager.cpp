@@ -128,6 +128,7 @@ namespace console
         render = &render_context_p;
         // call this to setup projection uniform and render print poll start
         mtx.unlock();
+        
         window_size_callback(window, width, height);
     }
 
@@ -227,7 +228,9 @@ namespace console
                 if(manager_s->active_input.find_first_not_of(' ') 
                         == std::string::npos && action != GLFW_PRESS)
                     break;
+                manager_s->mtx.unlock(); // print may be called in the enter callback
                 manager_s->enter_callback(manager_s->active_input);
+                manager_s->mtx.lock(); 
                 manager_s->last_input.push_back(manager_s->active_input);
                 manager_s->active_input.clear();
                 manager_s->last_input_index = manager_s->last_input.size()-1;
