@@ -127,8 +127,8 @@ namespace console
         mtx.lock();
         render = &render_context_p;
         // call this to setup projection uniform and render print poll start
-        window_size_callback(window, width, height);
         mtx.unlock();
+        window_size_callback(window, width, height);
     }
 
     void manager::use_font(abstractgl::ft::font& font)
@@ -171,16 +171,16 @@ namespace console
 
     void manager::window_size_callback(GLFWwindow* window, int width, int height)
     {
-       //manager_s->mtx.lock();
+       manager_s->mtx.lock();
        manager_s->render->set_start(0, height);
        manager_s->render->set_projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height)));
        manager_s->width = width, manager_s->height = height;
-       //manager_s->mtx.unlock();
+       manager_s->mtx.unlock();
     }
 
     void manager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        //manager_s->mtx.lock();
+        manager_s->mtx.lock();
         static short int last_key;
         switch(key)
         {
@@ -243,21 +243,21 @@ namespace console
         }
         last_key = key;
 
-        //manager_s->mtx.unlock();
+        manager_s->mtx.unlock();
     }
 
     void manager::character_callback(GLFWwindow* window, unsigned int codepoint)
     {
-        //manager_s->mtx.lock();
+        manager_s->mtx.lock();
         manager_s->active_input += (char)codepoint;
-        //manager_s->mtx.unlock();
+        manager_s->mtx.unlock();
     }
 
     void manager::framebuffer_callback(GLFWwindow* window, int width, int height)
     {
-       // manager_s->mtx.lock();
+        manager_s->mtx.lock();
         glViewport(0, 0, width, height);
-       // manager_s->mtx.unlock();
+        manager_s->mtx.unlock();
     }
 
     void manager::message_callback(

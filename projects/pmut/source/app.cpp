@@ -20,6 +20,7 @@
 */
 
 #include "headers/app.h"
+#include <cassert>
 
 namespace pmut
 {
@@ -86,7 +87,7 @@ namespace pmut
         data::console->set_all_callbacks();
 
         abstractgl::enable_blend();
-        
+
         add_base_commands();
     }
 

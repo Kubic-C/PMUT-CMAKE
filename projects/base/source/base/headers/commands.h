@@ -62,7 +62,7 @@ namespace pmut
 
     };
 
-    // run a command
+    // run a command async
     void run(stringref name);
 
     // end a command in command_thread. no safety

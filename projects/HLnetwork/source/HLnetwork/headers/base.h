@@ -31,3 +31,10 @@ namespace hlnet
 }
 
 #endif // NETWORK_BASE_H
+
+/*
+    TCP/UDP SERVER & CLIENT ASYNC
+
+    - have to define a function that will read all data until no more is being sent, then return.
+    
+*/

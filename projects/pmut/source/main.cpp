@@ -26,7 +26,7 @@ int main()
 {
     pmut::startup(
         PMUT_NAME,
-        1000, 1000,
+        725, 500,
         "./misc/fonts/__font.ttf",
         "./misc/shaders/font.glsl",
         "vertex",
