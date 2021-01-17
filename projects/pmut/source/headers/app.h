@@ -62,6 +62,12 @@ namespace pmut
 
     //  app_loop() defines a loop
     int app();
+
+    void early_frame();
+
+    void frame();
+
+    void late_frame();
 }
 
 #endif // PMUT_APP_H

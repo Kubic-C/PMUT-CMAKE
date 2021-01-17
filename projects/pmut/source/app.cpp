@@ -88,7 +88,10 @@ namespace pmut
 
         abstractgl::enable_blend();
 
+        data::console->set_enter_callback(call_command);
+
         add_base_commands();
+        hlnet::add_network_commands();
     }
 
     void cleanup()
@@ -106,31 +109,14 @@ namespace pmut
         data::console->print_m(console::modifier::perma_mod, 5, COLOR_YELLOW_3P,
                 glGetString(GL_VERSION), '\n');
 
-        data::console->set_enter_callback(call_command);
-
         glfwSwapInterval(1);
         timer loop_timer;
         while(!flags::exit_app && !glfwWindowShouldClose(data::console->window))
         {
             loop_timer.start();
-
-            // render here
-            glClear(GL_COLOR_BUFFER_BIT); 
-
-            data::console->print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
-
-            data::console->print_m(console::modifier::non_static_mod, 0, COLOR_WHITE_3P,
-                data::console->get_input() + '_', '\n');
-
-            data::console->poll();
-
-            end_command();
-
-            // show new renders
-            glfwSwapBuffers(data::console->window);
-
-            // events
-            glfwPollEvents();
+            early_frame();
+            frame();
+            late_frame();
             loop_timer.end();
         }
 
@@ -138,5 +124,34 @@ namespace pmut
 
         std::cout << "exiting with code: " << data::exit_code << '\n';
         return data::exit_code;
+    }
+
+    void early_frame()
+    {
+        // render here
+        glClear(GL_COLOR_BUFFER_BIT); 
+        data::console->poll();
+    }
+
+    void frame()
+    {
+        data::console->print_m(console::modifier::non_static_mod, 1, COLOR_GREEN_3P,
+            DISPLAYING_INFO, " running command: ", data::cmd_local::name, '\n');
+
+        data::console->print(PROMPTING_USER, console::modifier::non_static_mod, 0, COLOR_YELLOW_3P);
+
+        data::console->print_m(console::modifier::non_static_mod, 0, COLOR_WHITE_3P,
+            data::console->get_input(), '_', '\n');
+    }
+
+    void late_frame()
+    {
+        end_command();
+
+        // show new renders
+        glfwSwapBuffers(data::console->window);
+
+        // events
+        glfwPollEvents();
     }
 }

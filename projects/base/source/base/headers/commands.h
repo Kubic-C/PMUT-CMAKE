@@ -58,6 +58,7 @@ namespace pmut
     class command_gaurd
     {
     public:
+        command_gaurd();
         ~command_gaurd();
 
     };

@@ -38,7 +38,4 @@ int main()
 
 /* TODO or OPTIMIZE
 
-    - any way to put the two for loops into one in 
-    projects/console/source/abstract/external.cpp - font::compute_chars() 
-
 */

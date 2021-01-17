@@ -20,29 +20,23 @@
 */
 
 /*
-    command_def.h lists all "base" commands
+    commands.h of the HLnetwork library defines networking commands
 */
 
-#ifndef BASE_COMMAND_DEF_H
-#define BASE_COMMAND_DEF_H
+#ifndef HLNETWORK_COMMANDS_H
+#define HLNETWORK_COMMANDS_H
 
-#include "parser.h"
+#include "base.h"
 
-namespace pmut
-{   
+namespace hlnet
+{
+    void add_network_commands();
+
     namespace commands
     {
-        // exit the console with code n, default for code is 0
-        void exit();
-
-        // clear the console
-        void clear();
-
-        // echo to the console
-        void echo();
+        // write to the ip and port given
+        void write_to();
     }
-
-    void add_base_commands();
 }
 
-#endif // BASE_COMMAND_DEF_H
+#endif // HLNETWORK_COMMANDS_H

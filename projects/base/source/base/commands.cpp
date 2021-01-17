@@ -24,6 +24,10 @@
 
 namespace pmut
 {
+    command_gaurd::command_gaurd()
+    {
+    }
+
     command_gaurd::~command_gaurd()
     {
         flags::join_thread = true;
@@ -32,7 +36,10 @@ namespace pmut
     void run(stringref name)
     {
         if(!data::command_thread)
-            data::command_thread = new std::thread(data::commands[name].cmd);
+        {
+           data::cmd_local::name = name;
+           data::command_thread = new std::thread(data::commands[name].cmd);
+        }
         else
             data::console->print("cannot create thread; a command is already running\n", console::modifier::static_mod, -1, COLOR_RED_3P);
     }
