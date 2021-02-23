@@ -1,3 +1,6 @@
+This project is offically archived. The reason for that is because the goals are too loose
+and too vauge, and if i ever want to figure out what I want to do with this project then I will unarchive it.
+
 This project is currently being remade from the ground up, becuase of that many features are missing.
 This is a super ambitious project.
 
